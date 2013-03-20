@@ -54,6 +54,13 @@ public class ExerciseScreen extends Activity {
 	Display display;
 	Point size;
 	int screenWidth;
+	Double exercisePct;
+    Double weightPct;
+    Double setsPct;
+    Double repsPct;
+    Double targetPct;
+    Double tempoPct;
+    Double restPct;
 	
 	@SuppressLint({ "NewApi", "ResourceAsColor" })
 	@SuppressWarnings("deprecation")
@@ -137,194 +144,113 @@ public class ExerciseScreen extends Activity {
 	    	
 	    	EditText et;
 	    	Cursor exerciseCursor = null;
+										
+			lp = new LayoutParams(LayoutParams.WRAP_CONTENT,LayoutParams.WRAP_CONTENT);
+			lp.addRule(RelativeLayout.BELOW, topLevelView.getId());		
 			
+			// adding textview for field description
+			ll = new LinearLayout(this);
+	    	ll.setOrientation(LinearLayout.HORIZONTAL);
+	    	ll.setId(iViewCounter++);
+	    	
+	    	display = getWindowManager().getDefaultDisplay();
+	        size = new Point();
+	        display.getSize(size);
+	        screenWidth = size.x;
+	    	
+	        if (this.getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE){
+		        exercisePct = 0.4;
+		        weightPct = 0.1;
+		        setsPct = 0.1;
+		        repsPct = 0.1;
+		        targetPct = 0.1;
+		        tempoPct = 0.1;
+		        restPct = 0.1;
+	        }else if (this.getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT){
+		        exercisePct = 0.33;
+		        weightPct = 0.167;
+		        setsPct = 0.125;
+		        repsPct = 0.125;
+		        targetPct = 0.125;
+		        restPct = 0.125;
+	        }
+	    			    	
+			ll.addView(controlHelper.createTextView(this," Exercise", (int) (exercisePct * screenWidth), 20));	
+			ll.addView(controlHelper.createTextView(this," Weight(kg)", (int) (weightPct * screenWidth), 20));
+			ll.addView(controlHelper.createTextView(this," Sets", (int) (setsPct * screenWidth), 20));
+			ll.addView(controlHelper.createTextView(this," Reps", (int) (repsPct * screenWidth), 20));
+			ll.addView(controlHelper.createTextView(this," Target", (int) (targetPct * screenWidth), 20));
 			if (this.getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE){
-							
-				lp = new LayoutParams(LayoutParams.WRAP_CONTENT,LayoutParams.WRAP_CONTENT);
-				lp.addRule(RelativeLayout.BELOW, topLevelView.getId());		
-				
-				// adding textview for field description
-				ll = new LinearLayout(this);
-		    	ll.setOrientation(LinearLayout.HORIZONTAL);
-		    	ll.setId(iViewCounter++);
-		    	
-		    	display = getWindowManager().getDefaultDisplay();
-		        size = new Point();
-		        display.getSize(size);
-		        screenWidth = size.x;
-		    	
-		        Double exercisePct = 0.4;
-		        Double weightPct = 0.1;
-		        Double setsPct = 0.1;
-		        Double repsPct = 0.1;
-		        Double targetPct = 0.1;
-		        Double tempoPct = 0.1;
-		        Double restPct = 0.1;
-		    			    	
-				ll.addView(controlHelper.createTextView(this," Exercise", (int) (exercisePct * screenWidth), 20));	
-				ll.addView(controlHelper.createTextView(this," Weight(kg)", (int) (weightPct * screenWidth), 20));
-				ll.addView(controlHelper.createTextView(this," Sets", (int) (setsPct * screenWidth), 20));
-				ll.addView(controlHelper.createTextView(this," Reps", (int) (repsPct * screenWidth), 20));
-				ll.addView(controlHelper.createTextView(this," Target", (int) (targetPct * screenWidth), 20));
 				ll.addView(controlHelper.createTextView(this," Tempo", (int) (tempoPct* screenWidth), 20));
-				ll.addView(controlHelper.createTextView(this," Rest(s)", (int) (restPct * screenWidth), 20));
-		    
-		    	rl.addView(ll, lp);	
-				lp = new LayoutParams(LayoutParams.WRAP_CONTENT,LayoutParams.WRAP_CONTENT);
-				lp.addRule(RelativeLayout.BELOW, ll.getId());	
+			}
+			ll.addView(controlHelper.createTextView(this," Rest(s)", (int) (restPct * screenWidth), 20));
+	    
+	    	rl.addView(ll, lp);	
+			lp = new LayoutParams(LayoutParams.WRAP_CONTENT,LayoutParams.WRAP_CONTENT);
+			lp.addRule(RelativeLayout.BELOW, ll.getId());	
+			
+			
+			try {
+				helper.open();
+			} catch (SQLException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			try {
+				exerciseCursor = helper.getAllExercise();
+				exerciseCursor.moveToFirst();
+			} catch (Exception e) {}
 				
+	        do {
 				
-				try {
-					helper.open();
-				} catch (SQLException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-				try {
-					exerciseCursor = helper.getAllExercise();
-					exerciseCursor.moveToFirst();
-				} catch (Exception e) {}
-				
-		        do {
-					
-			    	ll = new LinearLayout(this);
-			    	ll.setOrientation(LinearLayout.HORIZONTAL);
-			    	ll.setId(iViewCounter++);
-			    	
-			    	AutoCompleteTextView actv = controlHelper.createAutoCompleteText(ExerciseScreen.this,  (exerciseCursor == null) ?  "" : exerciseCursor.getString(0),  (int) (exercisePct * screenWidth), true, InputType.TYPE_CLASS_TEXT|InputType.TYPE_TEXT_FLAG_CAP_WORDS, 80);
-			    	String[] countries = getResources().getStringArray(R.array.muscle_array);
-			    	ArrayAdapter<String> adapter =  new ArrayAdapter<String>(ExerciseScreen.this, android.R.layout.simple_dropdown_item_1line, countries);
-			    	actv.setAdapter(adapter);
-			    	editTextList.add(actv);
-					ll.addView(actv);
-					
-					et = controlHelper.createEditText(this,  (exerciseCursor == null) ?  "" : exerciseCursor.getString(1), (int) (weightPct * screenWidth), true, InputType.TYPE_CLASS_NUMBER|InputType.TYPE_NUMBER_FLAG_DECIMAL, 5);
-					editTextList.add(et);
-					ll.addView(et);
-									
-					et = controlHelper.createEditText(this, (exerciseCursor == null) ?  "" : exerciseCursor.getString(2), (int) (setsPct * screenWidth), true, InputType.TYPE_CLASS_NUMBER, 2);
-					editTextList.add(et);
-					ll.addView(et);
-					
-					et = controlHelper.createEditText(this, (exerciseCursor == null) ?  "" : exerciseCursor.getString(3), (int) (repsPct * screenWidth), true, InputType.TYPE_CLASS_NUMBER, 3);
-					editTextList.add(et);
-					ll.addView(et);
-					
-					et = controlHelper.createEditText(this, (exerciseCursor == null) ?  "" : exerciseCursor.getString(4), (int) (targetPct * screenWidth), true, InputType.TYPE_CLASS_NUMBER, 3);
-					editTextList.add(et);
-					ll.addView(et);
-					
-					et = controlHelper.createEditText(this, (exerciseCursor == null) ?  "" : exerciseCursor.getString(5), (int) (tempoPct* screenWidth), true, InputType.TYPE_CLASS_NUMBER, 4);
-					editTextList.add(et);
-					ll.addView(et);
-					
-					et = controlHelper.createEditText(this, (exerciseCursor == null) ?  "" : exerciseCursor.getString(6), (int) (restPct * screenWidth), true, InputType.TYPE_CLASS_NUMBER, 3);
-					editTextList.add(et);
-					ll.addView(et);
-							
-					rl.addView(ll, lp);	
-					lp = new LayoutParams(LayoutParams.WRAP_CONTENT,LayoutParams.WRAP_CONTENT);
-					lp.addRule(RelativeLayout.BELOW, ll.getId());	
-					
-					if (exerciseCursor == null)
-						break;
-					
-		        } while (exerciseCursor.moveToNext());				
-			}else if (this.getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT){
-				lp = new LayoutParams(LayoutParams.WRAP_CONTENT,LayoutParams.WRAP_CONTENT);
-				lp.addRule(RelativeLayout.BELOW, topLevelView.getId());
-								
-				// adding textview for field description
-				ll = new LinearLayout(this);
+		    	ll = new LinearLayout(this);
 		    	ll.setOrientation(LinearLayout.HORIZONTAL);
 		    	ll.setId(iViewCounter++);
 		    	
-		    	display = getWindowManager().getDefaultDisplay();
-		        size = new Point();
-		        display.getSize(size);
-		        screenWidth = size.x;
-						    	
-		        Double exercisePct = 0.33;
-		        Double weightPct = 0.167;
-		        Double setsPct = 0.125;
-		        Double repsPct = 0.125;
-		        Double targetPct = 0.125;
-		        Double restPct = 0.125;
-		    	
-				ll.addView(controlHelper.createTextView(this," Exercise", (int) (exercisePct * screenWidth), 20));	
-				ll.addView(controlHelper.createTextView(this," Weight(kg)",(int) (weightPct * screenWidth), 20));
-				ll.addView(controlHelper.createTextView(this," Sets", (int) (setsPct * screenWidth), 20));
-				ll.addView(controlHelper.createTextView(this," Reps", (int) (repsPct * screenWidth), 20));
-				ll.addView(controlHelper.createTextView(this," Target", (int) (targetPct * screenWidth), 20));
-				ll.addView(controlHelper.createTextView(this," Rest(s)",(int) (restPct * screenWidth), 20));
-		    
-		    	rl.addView(ll, lp);	
+		    	AutoCompleteTextView actv = controlHelper.createAutoCompleteText(ExerciseScreen.this,  (exerciseCursor == null) ?  "" : exerciseCursor.getString(0),  (int) (exercisePct * screenWidth), true, InputType.TYPE_CLASS_TEXT|InputType.TYPE_TEXT_FLAG_CAP_WORDS, 80);
+		    	String[] countries = getResources().getStringArray(R.array.muscle_array);
+		    	ArrayAdapter<String> adapter =  new ArrayAdapter<String>(ExerciseScreen.this, android.R.layout.simple_dropdown_item_1line, countries);
+		    	actv.setAdapter(adapter);
+		    	editTextList.add(actv);
+				ll.addView(actv);
+				
+				et = controlHelper.createEditText(this,  (exerciseCursor == null) ?  "" : exerciseCursor.getString(1), (int) (weightPct * screenWidth), true, InputType.TYPE_CLASS_NUMBER|InputType.TYPE_NUMBER_FLAG_DECIMAL, 5);
+				editTextList.add(et);
+				ll.addView(et);
+								
+				et = controlHelper.createEditText(this, (exerciseCursor == null) ?  "" : exerciseCursor.getString(2), (int) (setsPct * screenWidth), true, InputType.TYPE_CLASS_NUMBER, 2);
+				editTextList.add(et);
+				ll.addView(et);
+				
+				et = controlHelper.createEditText(this, (exerciseCursor == null) ?  "" : exerciseCursor.getString(3), (int) (repsPct * screenWidth), true, InputType.TYPE_CLASS_NUMBER, 3);
+				editTextList.add(et);
+				ll.addView(et);
+				
+				et = controlHelper.createEditText(this, (exerciseCursor == null) ?  "" : exerciseCursor.getString(4), (int) (targetPct * screenWidth), true, InputType.TYPE_CLASS_NUMBER, 3);
+				editTextList.add(et);
+				ll.addView(et);
+				
+				if (this.getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE){
+					et = controlHelper.createEditText(this, (exerciseCursor == null) ?  "" : exerciseCursor.getString(5), (int) (tempoPct* screenWidth), true, InputType.TYPE_CLASS_NUMBER, 4);
+					ll.addView(et);
+				}else if (this.getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT){
+					et = controlHelper.createEditText(this,  (exerciseCursor != null) ? exerciseCursor.getString(5) : "0202", 60, true, InputType.TYPE_CLASS_NUMBER, 4);
+				}
+				editTextList.add(et);
+				
+				et = controlHelper.createEditText(this, (exerciseCursor == null) ?  "" : exerciseCursor.getString(6), (int) (restPct * screenWidth), true, InputType.TYPE_CLASS_NUMBER, 3);
+				editTextList.add(et);
+				ll.addView(et);
+						
+				rl.addView(ll, lp);	
 				lp = new LayoutParams(LayoutParams.WRAP_CONTENT,LayoutParams.WRAP_CONTENT);
 				lp.addRule(RelativeLayout.BELOW, ll.getId());	
 				
+				if (exerciseCursor == null)
+					break;
 				
-				try {
-					helper.open();
-				} catch (SQLException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-				
-				try{				
-					exerciseCursor = helper.getAllExercise();
-					exerciseCursor.moveToFirst();
-				}catch (Exception e){}
-				
-		        do {
-					
-			    	ll = new LinearLayout(this);
-			    	ll.setOrientation(LinearLayout.HORIZONTAL);
-			    	ll.setId(iViewCounter++);
-			    	
-			    	AutoCompleteTextView actv = controlHelper.createAutoCompleteText(this,  (exerciseCursor == null) ?  "" : exerciseCursor.getString(0),  (int) (exercisePct * screenWidth), true, InputType.TYPE_CLASS_TEXT|InputType.TYPE_TEXT_FLAG_CAP_WORDS, 80);
-			    	String[] countries = getResources().getStringArray(R.array.muscle_array);
-			    	ArrayAdapter<String> adapter =  new ArrayAdapter<String>(ExerciseScreen.this, android.R.layout.simple_dropdown_item_1line, countries);
-			    	actv.setAdapter(adapter);
-			    	editTextList.add(actv);
-					ll.addView(actv);
-			    	
-					et = controlHelper.createEditText(this, (exerciseCursor != null) ? exerciseCursor.getString(1) : "", (int) (weightPct * screenWidth), true, InputType.TYPE_CLASS_NUMBER|InputType.TYPE_NUMBER_FLAG_DECIMAL, 5);
-					editTextList.add(et);
-					ll.addView(et);
-									
-					et = controlHelper.createEditText(this,  (exerciseCursor != null) ? exerciseCursor.getString(2) : "", (int) (setsPct * screenWidth), true, InputType.TYPE_CLASS_NUMBER, 2);
-					editTextList.add(et);
-					ll.addView(et);
-					
-					et = controlHelper.createEditText(this,  (exerciseCursor != null) ? exerciseCursor.getString(3) : "", (int) (repsPct * screenWidth), true, InputType.TYPE_CLASS_NUMBER, 3);
-					editTextList.add(et);
-					ll.addView(et);
-					
-					et = controlHelper.createEditText(this,  (exerciseCursor != null) ? exerciseCursor.getString(4) : "", (int) (targetPct * screenWidth), true, InputType.TYPE_CLASS_NUMBER, 3);
-					editTextList.add(et);
-					ll.addView(et);
-											
-					// default is 0202
-					et = controlHelper.createEditText(this,  (exerciseCursor != null) ? exerciseCursor.getString(5) : "0202", 60, true, InputType.TYPE_CLASS_NUMBER, 4);
-					editTextList.add(et);
-					//ll.addView(et);
-					
-					et = controlHelper.createEditText(this,  (exerciseCursor != null) ? exerciseCursor.getString(6) : "", (int) (restPct * screenWidth), true, InputType.TYPE_CLASS_NUMBER, 3);
-					editTextList.add(et);
-					ll.addView(et);
-							
-					rl.addView(ll, lp);	
-					lp = new LayoutParams(LayoutParams.WRAP_CONTENT,LayoutParams.WRAP_CONTENT);
-					lp.addRule(RelativeLayout.BELOW, ll.getId());	
-					
-					if (exerciseCursor == null)
-							break;
-					
-		        } while (exerciseCursor.moveToNext());				
-			}
-		
-			
-			
+	        } while (exerciseCursor.moveToNext());		
+	        
 			sv.addView(rl);
 			
 			this.setContentView(sv);
@@ -335,16 +261,6 @@ public class ExerciseScreen extends Activity {
 	        super.onConfigurationChanged(newConfig);
 	       
 	        if (newConfig.orientation == Configuration.ORIENTATION_PORTRAIT){
-//	        	ll = new LinearLayout(this);
-//		    	ll.setOrientation(LinearLayout.HORIZONTAL);
-//		    	ll.setId(iViewCounter++);
-//		    	
-//		    	TextView tv = new TextView(this);
-//				tv.setText(getIntent().getStringExtra("workoutTitle"));
-//				tv.setTextColor(Color.parseColor("#00ccff"));
-//				tv.setId(iViewCounter++);
-//				ll.addView(tv);
-//				this.setContentView(ll);
 	        }
 	    }
 	
@@ -374,39 +290,7 @@ public class ExerciseScreen extends Activity {
 			        Double targetPct = 0.1;
 			        Double tempoPct = 0.1;
 			        Double restPct = 0.1;
-				        
-					actv = controlHelper.createAutoCompleteText(ExerciseScreen.this, "", (int) (exercisePct * screenWidth), true, InputType.TYPE_CLASS_TEXT|InputType.TYPE_TEXT_FLAG_CAP_WORDS, 80);
-			    	String[] countries = getResources().getStringArray(R.array.muscle_array);
-			    	ArrayAdapter<String> adapter = 
-			    	        new ArrayAdapter<String>(ExerciseScreen.this, android.R.layout.simple_dropdown_item_1line, countries);
-			    	actv.setAdapter(adapter);
-			    	actv.setTag(getIntent().getStringExtra("workoutRowID"));	
-					editTextList.add(actv);	
-					llAddNewRow.addView(actv);
-					
-					et = controlHelper.createEditText(ExerciseScreen.this, "",  (int) (weightPct * screenWidth), true, InputType.TYPE_CLASS_NUMBER|InputType.TYPE_NUMBER_FLAG_DECIMAL, 5);
-					editTextList.add(et);
-					llAddNewRow.addView(et);
-									
-					et = controlHelper.createEditText(ExerciseScreen.this, "", (int) (setsPct * screenWidth), true, InputType.TYPE_CLASS_NUMBER, 2);
-					editTextList.add(et);
-					llAddNewRow.addView(et);
-					
-					et = controlHelper.createEditText(ExerciseScreen.this, "", (int) (repsPct * screenWidth), true, InputType.TYPE_CLASS_NUMBER, 3);
-					editTextList.add(et);
-					llAddNewRow.addView(et);
-					
-					et = controlHelper.createEditText(ExerciseScreen.this, "", (int) (targetPct * screenWidth), true, InputType.TYPE_CLASS_NUMBER, 3);
-					editTextList.add(et);
-					llAddNewRow.addView(et);
-					
-					et = controlHelper.createEditText(ExerciseScreen.this, "", (int) (tempoPct * screenWidth), true, InputType.TYPE_CLASS_NUMBER, 4);
-					editTextList.add(et);
-					llAddNewRow.addView(et);
-					
-					et = controlHelper.createEditText(ExerciseScreen.this, "", (int) (restPct * screenWidth), true, InputType.TYPE_CLASS_NUMBER, 3);
-					editTextList.add(et);
-					llAddNewRow.addView(et);
+			        
 				}else if(ExerciseScreen.this.getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT){
 									
 
@@ -416,43 +300,46 @@ public class ExerciseScreen extends Activity {
 			        Double repsPct = 0.125;
 			        Double targetPct = 0.125;
 			        Double restPct = 0.125;
-					
-					actv = controlHelper.createAutoCompleteText(ExerciseScreen.this,  "",  (int) (exercisePct * screenWidth), true, InputType.TYPE_CLASS_TEXT|InputType.TYPE_TEXT_FLAG_CAP_WORDS, 80);
-			    	String[] countries = getResources().getStringArray(R.array.muscle_array);
-			    	ArrayAdapter<String> adapter =  new ArrayAdapter<String>(ExerciseScreen.this, android.R.layout.simple_dropdown_item_1line, countries);
-			    	actv.setAdapter(adapter);
-			    	editTextList.add(actv);
-			    	llAddNewRow.addView(actv);
-					
-					et = controlHelper.createEditText(ExerciseScreen.this, "", (int) (weightPct * screenWidth), true, InputType.TYPE_CLASS_NUMBER|InputType.TYPE_NUMBER_FLAG_DECIMAL, 5);
-					editTextList.add(et);
+				}
+				        
+				actv = controlHelper.createAutoCompleteText(ExerciseScreen.this, "", (int) (exercisePct * screenWidth), true, InputType.TYPE_CLASS_TEXT|InputType.TYPE_TEXT_FLAG_CAP_WORDS, 80);
+		    		String[] countries = getResources().getStringArray(R.array.muscle_array);
+		    	ArrayAdapter<String> adapter = 
+		    	        new ArrayAdapter<String>(ExerciseScreen.this, android.R.layout.simple_dropdown_item_1line, countries);
+		    	actv.setAdapter(adapter);
+		    	actv.setTag(getIntent().getStringExtra("workoutRowID"));	
+				editTextList.add(actv);	
+				llAddNewRow.addView(actv);
+				
+				et = controlHelper.createEditText(ExerciseScreen.this, "",  (int) (weightPct * screenWidth), true, InputType.TYPE_CLASS_NUMBER|InputType.TYPE_NUMBER_FLAG_DECIMAL, 5);
+				editTextList.add(et);
+				llAddNewRow.addView(et);
+								
+				et = controlHelper.createEditText(ExerciseScreen.this, "", (int) (setsPct * screenWidth), true, InputType.TYPE_CLASS_NUMBER, 2);
+				editTextList.add(et);
+				llAddNewRow.addView(et);
+				
+				et = controlHelper.createEditText(ExerciseScreen.this, "", (int) (repsPct * screenWidth), true, InputType.TYPE_CLASS_NUMBER, 3);
+				editTextList.add(et);
+				llAddNewRow.addView(et);
+				
+				et = controlHelper.createEditText(ExerciseScreen.this, "", (int) (targetPct * screenWidth), true, InputType.TYPE_CLASS_NUMBER, 3);
+				editTextList.add(et);
+				llAddNewRow.addView(et);
+				
+				if (ExerciseScreen.this.getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE){
+					et = controlHelper.createEditText(ExerciseScreen.this, "", (int) (tempoPct * screenWidth), true, InputType.TYPE_CLASS_NUMBER, 4);
 					llAddNewRow.addView(et);
-									
-					et = controlHelper.createEditText(ExerciseScreen.this, "", (int) (setsPct * screenWidth), true, InputType.TYPE_CLASS_NUMBER, 2);
-					editTextList.add(et);
-					llAddNewRow.addView(et);
-					
-					et = controlHelper.createEditText(ExerciseScreen.this, "", (int) (repsPct * screenWidth), true, InputType.TYPE_CLASS_NUMBER, 3);
-					editTextList.add(et);
-					llAddNewRow.addView(et);
-					
-					et = controlHelper.createEditText(ExerciseScreen.this, "", (int) (targetPct * screenWidth), true, InputType.TYPE_CLASS_NUMBER, 3);
-					editTextList.add(et);
-					llAddNewRow.addView(et);
-					
+				}else if(ExerciseScreen.this.getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT){
 					// assuming default tempo of 0202
 					et = controlHelper.createEditText(ExerciseScreen.this, "0202", 60, true, InputType.TYPE_CLASS_NUMBER, 4);
-					editTextList.add(et);
-					//ll.addView(et);
-					
-					et = controlHelper.createEditText(ExerciseScreen.this, "", (int) (restPct * screenWidth), true, InputType.TYPE_CLASS_NUMBER, 3);
-					editTextList.add(et);
-					llAddNewRow.addView(et);
 				}
-				
-				//View button = rl.getChildAt(rl.getChildCount()-1);
-				//rl.removeViewAt(rl.getChildCount()-1);
-				
+				editTextList.add(et);
+								
+				et = controlHelper.createEditText(ExerciseScreen.this, "", (int) (restPct * screenWidth), true, InputType.TYPE_CLASS_NUMBER, 3);
+				editTextList.add(et);
+				llAddNewRow.addView(et);							
+								
 				// need to check if this is the first row to be added or not; cos it will throw exception
 				View lastLinearLayout = rl.getChildAt(rl.getChildCount()-1);
 				
