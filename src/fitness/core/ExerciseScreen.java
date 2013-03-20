@@ -251,8 +251,7 @@ public class ExerciseScreen extends Activity {
 				
 	        } while (exerciseCursor.moveToNext());		
 	        
-			sv.addView(rl);
-			
+			sv.addView(rl);			
 			this.setContentView(sv);
 		}
 	
@@ -263,6 +262,8 @@ public class ExerciseScreen extends Activity {
 	        if (newConfig.orientation == Configuration.ORIENTATION_PORTRAIT){
 	        }
 	    }
+		
+		
 	
 		private View.OnClickListener onAddNewRow = new View.OnClickListener() {
 			

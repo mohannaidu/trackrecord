@@ -5,6 +5,8 @@ import android.annotation.SuppressLint;
 import android.content.Context;
 import android.graphics.Color;
 import android.text.InputFilter;
+import android.view.View;
+import android.view.View.OnFocusChangeListener;
 import android.widget.AutoCompleteTextView;
 import android.widget.EditText;
 import android.widget.TextView;
@@ -21,6 +23,10 @@ public class ControlHelper {
 		et.setText(sValue);
 		et.setWidth(iWidth);
 		et.setSelectAllOnFocus(selectOnFocus);
+		et.setFocusable(false);
+		et.setFocusableInTouchMode(false);
+		et.setOnClickListener(editTextFocusable);
+		//et.setOnFocusChangeListener(editTextFocus);
 		et.setInputType(sInputType);
 		FilterArray = new InputFilter[1];
 		FilterArray[0] = new InputFilter.LengthFilter(maxLength);
@@ -35,6 +41,10 @@ public class ControlHelper {
 		actv.setWidth(iWidth);
 		actv.setDropDownWidth(400);
 		actv.setSelectAllOnFocus(selectOnFocus);
+		actv.setFocusable(false);
+		actv.setFocusableInTouchMode(false);
+		actv.setOnClickListener(editTextFocusable);
+		//actv.setOnFocusChangeListener(editTextFocus);
 		//actv.setInputType(sInputType);
 		FilterArray = new InputFilter[1];
 		FilterArray[0] = new InputFilter.LengthFilter(maxLength);
@@ -53,4 +63,32 @@ public class ControlHelper {
 				
 		return vt;
 	}
+	
+	private View.OnClickListener editTextFocusable = new View.OnClickListener() {
+		
+		@SuppressLint("NewApi")
+		@Override
+		public void onClick(View v) {
+			EditText et = (EditText)v;
+			et.setFocusable(true);
+			et.setFocusableInTouchMode(true);
+			et.requestFocus();
+		}
+	};
+	
+	/*private OnFocusChangeListener editTextFocus =  new OnFocusChangeListener() {
+		  public void onFocusChange(View view, boolean gainFocus) {
+		   //onFocus
+		   if (gainFocus) {
+		    //set the text
+		    //((EditText) view).setText("In focus now");
+		   } 
+		   //onBlur
+		   else {
+		    //clear the text
+		    ((EditText) view).setFocusable(false);
+		    ((EditText) view).setFocusableInTouchMode(false);
+		   }
+		  };
+		 };*/
 }
