@@ -119,7 +119,7 @@ public class ExerciseScreen extends Activity {
 	    	tv.setWidth(screenWidth/2);
 	    	tv.setId(iViewCounter++);
 			tv.setText(">>>" + getIntent().getStringExtra("workoutTitle"));
-			tv.setTextAppearance(this, R.style.workoutTextView);			
+			tv.setTextAppearance(this, R.style.exerciseTextView);			
 			tv.setBackgroundColor(Color.parseColor("#CFECEC"));
 			tv.setId(iViewCounter++);
 			rlTopView.addView(tv);
@@ -257,6 +257,7 @@ public class ExerciseScreen extends Activity {
 		    	String[] countries = getResources().getStringArray(R.array.muscle_array);
 		    	ArrayAdapter<String> adapter =  new ArrayAdapter<String>(ExerciseScreen.this, android.R.layout.simple_dropdown_item_1line, countries);
 		    	actv.setAdapter(adapter);
+		    	actv.setTag(getIntent().getStringExtra("workoutRowID"));
 		    	editTextList.add(actv);
 				ll.addView(actv);
 				

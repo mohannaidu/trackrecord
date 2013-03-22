@@ -12,6 +12,7 @@ import sra.gg.R;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
+import android.app.Dialog;
 import android.content.Intent;
 import android.content.res.Resources;
 import android.database.Cursor;
@@ -19,6 +20,7 @@ import android.graphics.Color;
 import android.graphics.Point;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.os.Handler;
 import android.text.InputType;
 import android.util.Log;
 import android.view.Display;
@@ -50,6 +52,7 @@ public class WorkoutScreen extends Activity {
 	Display display;
 	Point size;
 	int screenWidth;
+	protected Dialog mSplashDialog;
 	
 	@SuppressLint("NewApi")
 	@Override
@@ -64,6 +67,7 @@ public class WorkoutScreen extends Activity {
 		getWindow().getDecorView().setBackground(drawable);
 		
 		*/
+		//showSplashScreen();
 		
 		display = getWindowManager().getDefaultDisplay();
         size = new Point();
@@ -183,6 +187,7 @@ public class WorkoutScreen extends Activity {
     	
     	
 		this.setContentView(ll);
+		//removeSplashScreen();
 	}
 	
 	private View.OnClickListener openExercise = new View.OnClickListener() {
@@ -261,4 +266,36 @@ public class WorkoutScreen extends Activity {
 		helper.close();
 	}
 	
+	//** splash screen code */
+	
+	/**
+	 * Removes the Dialog that displays the splash screen
+	 */
+	protected void removeSplashScreen() {
+	    if (mSplashDialog != null) {
+	        mSplashDialog.dismiss();
+	        mSplashDialog = null;
+	    }
+	}
+	 
+	/**
+	 * Shows the splash screen over the full Activity
+	 */
+	protected void showSplashScreen() {
+	    mSplashDialog = new Dialog(this, R.style.SplashScreen);
+	    mSplashDialog.setContentView(R.layout.test);
+	    mSplashDialog.setCancelable(false);
+	    mSplashDialog.show();
+	     
+	    // Set Runnable to remove splash screen just in case
+	    final Handler handler = new Handler();
+	    handler.postDelayed(new Runnable() {
+	      @Override
+	      public void run() {
+	        removeSplashScreen();
+	      }
+	    }, 100000);
+	}
+	 
+
 }

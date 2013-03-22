@@ -26,6 +26,7 @@ public class ControlHelper {
 		et.setSelectAllOnFocus(selectOnFocus);
 		et.setFocusable(false);
 		et.setFocusableInTouchMode(false);
+		et.setSingleLine(true);
 		et.setOnClickListener(editTextFocusable);
 		//et.setOnFocusChangeListener(editTextFocus);
 		et.setInputType(sInputType);
@@ -44,6 +45,7 @@ public class ControlHelper {
 		actv.setDropDownWidth(400);
 		actv.setSelectAllOnFocus(selectOnFocus);
 		actv.setFocusable(false);
+		actv.setSingleLine(true);
 		actv.setFocusableInTouchMode(false);
 		actv.setOnClickListener(editTextFocusable);
 		//actv.setOnFocusChangeListener(editTextFocus);
