@@ -2,7 +2,10 @@ package fitness.core;
 
 
 import java.sql.SQLException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 
 import fitness.data.ExerciseAdapter;
@@ -13,6 +16,8 @@ import sra.gg.R;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.app.DatePickerDialog;
+import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.res.Configuration;
 import android.content.res.Resources;
@@ -22,10 +27,14 @@ import android.graphics.Point;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.text.InputType;
+import android.text.format.DateFormat;
+import android.text.format.Time;
 import android.util.Log;
 import android.view.Display;
+import android.view.Gravity;
 import android.view.View;
 import android.widget.ArrayAdapter;
+import android.widget.DatePicker;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.RelativeLayout.LayoutParams;
@@ -38,16 +47,20 @@ import android.widget.Toast;
 
 
 public class ExerciseScreen extends Activity {
+	private static final int MY_DATE_DIALOG_ID = 3;
 	private Exercise exercise = new Exercise();
+	private static Time exerciseDate = new Time();
 	private List<EditText> editTextList = new ArrayList<EditText>();
 	ExerciseAdapter helper;
 	ControlHelper controlHelper; 
 	ScrollView sv;
 	RelativeLayout rl;
+	RelativeLayout rlTopView;
 	LinearLayout ll;
 	LayoutParams lp;
 	LayoutParams lpSave;
-	LayoutParams lpTopLevel;
+	LayoutParams lpTopLevel;	
+	LayoutParams lpTopView;
 	Button save;
 	int iViewCounter = 1;
 	LayoutParams lpAdd;
@@ -69,13 +82,14 @@ public class ExerciseScreen extends Activity {
 			super.onCreate(savedInstanceState);
 			
 			// style 1
-			this.setTheme(android.R.style.Theme_Black_NoTitleBar);
+			//this.setTheme(android.R.style.Theme_Black_NoTitleBar);
 			/*if (this.getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT){
 				Resources res = getResources();
 				Drawable drawable = res.getDrawable(R.drawable.di_sails_dark_gray_mdpi2); 
 				getWindow().getDecorView().setBackground(drawable);
 			}
 			*/
+			
 			//pale blue bg
 			getWindow().getDecorView().setBackgroundColor(Color.parseColor("#AFC7C7"));
 			
@@ -90,22 +104,54 @@ public class ExerciseScreen extends Activity {
 			sv = new ScrollView(this);
 			rl = new RelativeLayout(this);
 							
-			ll = new LinearLayout(this);
+			/*ll = new LinearLayout(this);
 	    	ll.setOrientation(LinearLayout.HORIZONTAL);
 	    	ll.setId(iViewCounter++);
-	    	
+	    	*/
+			rlTopView = new RelativeLayout(this);
+			lpTopView = new LayoutParams(LayoutParams.MATCH_PARENT,LayoutParams.MATCH_PARENT);
+			rlTopView.setPadding(0, 10, 0, 10);
+			rlTopView.setLayoutParams(lpTopView);
+			rlTopView.setId(iViewCounter++);
+			
+	    	/** Workout Title */
 	    	TextView tv = new TextView(this);
-	    	tv.setWidth(screenWidth);
-	    	//LayoutParams lpTopView = new LayoutParams(LayoutParams.MATCH_PARENT,LayoutParams.WRAP_CONTENT);
-	    	//lpTopView.setMargins(15, 9, 9, 4);    
-	    	
+	    	tv.setWidth(screenWidth/2);
+	    	tv.setId(iViewCounter++);
 			tv.setText(">>>" + getIntent().getStringExtra("workoutTitle"));
 			tv.setTextAppearance(this, R.style.workoutTextView);			
 			tv.setBackgroundColor(Color.parseColor("#CFECEC"));
 			tv.setId(iViewCounter++);
-			ll.addView(tv);
+			rlTopView.addView(tv);
+			//ll.addView(tv);
+			
+			/** Calendar Display */
+			lpAdd = new LayoutParams(LayoutParams.WRAP_CONTENT,LayoutParams.WRAP_CONTENT);
+			lpAdd.addRule(RelativeLayout.RIGHT_OF, tv.getId());
+			tv = new TextView(this);
+	    	tv.setWidth(screenWidth/2);
+	    	tv.setGravity(Gravity.RIGHT);
 	    	
-			rl.addView(ll);
+	    	// should initialize in the different place cos if rotate will reset to old value
+	    	exerciseDate.setToNow();
+	    	long dtDob = exerciseDate.toMillis(true);    	
+			tv.setText(DateFormat.format("dd-MM-yy", dtDob));
+			tv.setTextAppearance(this, R.style.calendarTextView);		
+			tv.setBackgroundColor(getResources().getColor(R.color.orange));
+			tv.setOnClickListener(new View.OnClickListener() {
+				
+				@Override
+				public void onClick(View v) {
+					showDialog(MY_DATE_DIALOG_ID);
+				}
+			});
+			tv.setId(iViewCounter++);
+			
+			rlTopView.addView(tv, lpAdd);
+			//ll.addView(tv);
+	    	
+			//rl.addView(ll);
+			rl.addView(rlTopView);
 			
 			Resources res = getResources();
 			RelativeLayout topLevelView = new RelativeLayout(this);
@@ -139,7 +185,7 @@ public class ExerciseScreen extends Activity {
 			topLevelView.addView(save, lpSave);
 			
 			lpTopLevel = new LayoutParams(LayoutParams.WRAP_CONTENT,LayoutParams.WRAP_CONTENT);
-			lpTopLevel.addRule(RelativeLayout.BELOW, ll.getId());
+			lpTopLevel.addRule(RelativeLayout.BELOW, rlTopView.getId());
 	    	rl.addView(topLevelView, lpTopLevel);
 	    	
 	    	EditText et;
@@ -207,38 +253,38 @@ public class ExerciseScreen extends Activity {
 		    	ll.setOrientation(LinearLayout.HORIZONTAL);
 		    	ll.setId(iViewCounter++);
 		    	
-		    	AutoCompleteTextView actv = controlHelper.createAutoCompleteText(ExerciseScreen.this,  (exerciseCursor == null) ?  "" : exerciseCursor.getString(0),  (int) (exercisePct * screenWidth), true, InputType.TYPE_CLASS_TEXT|InputType.TYPE_TEXT_FLAG_CAP_WORDS, 80);
+		    	AutoCompleteTextView actv = controlHelper.createAutoCompleteText(ExerciseScreen.this,  (exerciseCursor == null) ?  "" : exerciseCursor.getString(0), "Enter exercise",  (int) (exercisePct * screenWidth), true, InputType.TYPE_CLASS_TEXT|InputType.TYPE_TEXT_FLAG_CAP_WORDS, 80);
 		    	String[] countries = getResources().getStringArray(R.array.muscle_array);
 		    	ArrayAdapter<String> adapter =  new ArrayAdapter<String>(ExerciseScreen.this, android.R.layout.simple_dropdown_item_1line, countries);
 		    	actv.setAdapter(adapter);
 		    	editTextList.add(actv);
 				ll.addView(actv);
 				
-				et = controlHelper.createEditText(this,  (exerciseCursor == null) ?  "" : exerciseCursor.getString(1), (int) (weightPct * screenWidth), true, InputType.TYPE_CLASS_NUMBER|InputType.TYPE_NUMBER_FLAG_DECIMAL, 5);
+				et = controlHelper.createEditText(this,  (exerciseCursor == null) ?  "" : exerciseCursor.getString(1),"10.0", (int) (weightPct * screenWidth), true, InputType.TYPE_CLASS_NUMBER|InputType.TYPE_NUMBER_FLAG_DECIMAL, 5);
 				editTextList.add(et);
 				ll.addView(et);
 								
-				et = controlHelper.createEditText(this, (exerciseCursor == null) ?  "" : exerciseCursor.getString(2), (int) (setsPct * screenWidth), true, InputType.TYPE_CLASS_NUMBER, 2);
+				et = controlHelper.createEditText(this, (exerciseCursor == null) ?  "" : exerciseCursor.getString(2), "4", (int) (setsPct * screenWidth), true, InputType.TYPE_CLASS_NUMBER, 2);
 				editTextList.add(et);
 				ll.addView(et);
 				
-				et = controlHelper.createEditText(this, (exerciseCursor == null) ?  "" : exerciseCursor.getString(3), (int) (repsPct * screenWidth), true, InputType.TYPE_CLASS_NUMBER, 3);
+				et = controlHelper.createEditText(this, (exerciseCursor == null) ?  "" : exerciseCursor.getString(3), "4", (int) (repsPct * screenWidth), true, InputType.TYPE_CLASS_NUMBER, 3);
 				editTextList.add(et);
 				ll.addView(et);
 				
-				et = controlHelper.createEditText(this, (exerciseCursor == null) ?  "" : exerciseCursor.getString(4), (int) (targetPct * screenWidth), true, InputType.TYPE_CLASS_NUMBER, 3);
+				et = controlHelper.createEditText(this, (exerciseCursor == null) ?  "" : exerciseCursor.getString(4), "4", (int) (targetPct * screenWidth), true, InputType.TYPE_CLASS_NUMBER, 3);
 				editTextList.add(et);
 				ll.addView(et);
 				
 				if (this.getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE){
-					et = controlHelper.createEditText(this, (exerciseCursor == null) ?  "" : exerciseCursor.getString(5), (int) (tempoPct* screenWidth), true, InputType.TYPE_CLASS_NUMBER, 4);
+					et = controlHelper.createEditText(this, (exerciseCursor == null) ?  "" : exerciseCursor.getString(5), "0202", (int) (tempoPct* screenWidth), true, InputType.TYPE_CLASS_NUMBER, 4);
 					ll.addView(et);
 				}else if (this.getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT){
-					et = controlHelper.createEditText(this,  (exerciseCursor != null) ? exerciseCursor.getString(5) : "0202", 60, true, InputType.TYPE_CLASS_NUMBER, 4);
+					et = controlHelper.createEditText(this,  (exerciseCursor != null) ? exerciseCursor.getString(5) : "0202", "0202", 60, true, InputType.TYPE_CLASS_NUMBER, 4);
 				}
 				editTextList.add(et);
 				
-				et = controlHelper.createEditText(this, (exerciseCursor == null) ?  "" : exerciseCursor.getString(6), (int) (restPct * screenWidth), true, InputType.TYPE_CLASS_NUMBER, 3);
+				et = controlHelper.createEditText(this, (exerciseCursor == null) ?  "" : exerciseCursor.getString(6), "30", (int) (restPct * screenWidth), true, InputType.TYPE_CLASS_NUMBER, 3);
 				editTextList.add(et);
 				ll.addView(et);
 						
@@ -303,7 +349,7 @@ public class ExerciseScreen extends Activity {
 			        Double restPct = 0.125;
 				}
 				        
-				actv = controlHelper.createAutoCompleteText(ExerciseScreen.this, "", (int) (exercisePct * screenWidth), true, InputType.TYPE_CLASS_TEXT|InputType.TYPE_TEXT_FLAG_CAP_WORDS, 80);
+				actv = controlHelper.createAutoCompleteText(ExerciseScreen.this, "",  "Enter exercise", (int) (exercisePct * screenWidth), true, InputType.TYPE_CLASS_TEXT|InputType.TYPE_TEXT_FLAG_CAP_WORDS, 80);
 		    		String[] countries = getResources().getStringArray(R.array.muscle_array);
 		    	ArrayAdapter<String> adapter = 
 		    	        new ArrayAdapter<String>(ExerciseScreen.this, android.R.layout.simple_dropdown_item_1line, countries);
@@ -312,32 +358,32 @@ public class ExerciseScreen extends Activity {
 				editTextList.add(actv);	
 				llAddNewRow.addView(actv);
 				
-				et = controlHelper.createEditText(ExerciseScreen.this, "",  (int) (weightPct * screenWidth), true, InputType.TYPE_CLASS_NUMBER|InputType.TYPE_NUMBER_FLAG_DECIMAL, 5);
+				et = controlHelper.createEditText(ExerciseScreen.this, "", "10.0",  (int) (weightPct * screenWidth), true, InputType.TYPE_CLASS_NUMBER|InputType.TYPE_NUMBER_FLAG_DECIMAL, 5);
 				editTextList.add(et);
 				llAddNewRow.addView(et);
 								
-				et = controlHelper.createEditText(ExerciseScreen.this, "", (int) (setsPct * screenWidth), true, InputType.TYPE_CLASS_NUMBER, 2);
+				et = controlHelper.createEditText(ExerciseScreen.this, "", "4", (int) (setsPct * screenWidth), true, InputType.TYPE_CLASS_NUMBER, 2);
 				editTextList.add(et);
 				llAddNewRow.addView(et);
 				
-				et = controlHelper.createEditText(ExerciseScreen.this, "", (int) (repsPct * screenWidth), true, InputType.TYPE_CLASS_NUMBER, 3);
+				et = controlHelper.createEditText(ExerciseScreen.this, "", "4", (int) (repsPct * screenWidth), true, InputType.TYPE_CLASS_NUMBER, 3);
 				editTextList.add(et);
 				llAddNewRow.addView(et);
 				
-				et = controlHelper.createEditText(ExerciseScreen.this, "", (int) (targetPct * screenWidth), true, InputType.TYPE_CLASS_NUMBER, 3);
+				et = controlHelper.createEditText(ExerciseScreen.this, "", "4", (int) (targetPct * screenWidth), true, InputType.TYPE_CLASS_NUMBER, 3);
 				editTextList.add(et);
 				llAddNewRow.addView(et);
 				
 				if (ExerciseScreen.this.getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE){
-					et = controlHelper.createEditText(ExerciseScreen.this, "", (int) (tempoPct * screenWidth), true, InputType.TYPE_CLASS_NUMBER, 4);
+					et = controlHelper.createEditText(ExerciseScreen.this, "", "0202",(int) (tempoPct * screenWidth), true, InputType.TYPE_CLASS_NUMBER, 4);
 					llAddNewRow.addView(et);
 				}else if(ExerciseScreen.this.getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT){
 					// assuming default tempo of 0202
-					et = controlHelper.createEditText(ExerciseScreen.this, "0202", 60, true, InputType.TYPE_CLASS_NUMBER, 4);
+					et = controlHelper.createEditText(ExerciseScreen.this, "0202", "0202", 60, true, InputType.TYPE_CLASS_NUMBER, 4);
 				}
 				editTextList.add(et);
 								
-				et = controlHelper.createEditText(ExerciseScreen.this, "", (int) (restPct * screenWidth), true, InputType.TYPE_CLASS_NUMBER, 3);
+				et = controlHelper.createEditText(ExerciseScreen.this, "", "30", (int) (restPct * screenWidth), true, InputType.TYPE_CLASS_NUMBER, 3);
 				editTextList.add(et);
 				llAddNewRow.addView(et);							
 								
@@ -359,6 +405,7 @@ public class ExerciseScreen extends Activity {
 	
 		private View.OnClickListener onSave = new View.OnClickListener() {
 			
+			@SuppressWarnings("deprecation")
 			@Override
 			public void onClick(View v) {
 				// Assumption is that 10 rows are max listed in the screen
@@ -425,5 +472,43 @@ public class ExerciseScreen extends Activity {
 			super.onDestroy();
 			helper.close();
 		}
+		
+		protected Dialog onCreateDialog(int id) {
+			switch (id) {
+			case MY_DATE_DIALOG_ID:
+			    DatePickerDialog dateDlg = new DatePickerDialog(this, new DatePickerDialog.OnDateSetListener() {
+			            public void onDateSet(DatePicker view, int year,
+			                                                int monthOfYear, int dayOfMonth)
+			            {
+			                       Time chosenDate = new Time();
+			                       chosenDate.set(dayOfMonth, monthOfYear, year);
+			                       exerciseDate = chosenDate;
+			                       long dtDob = exerciseDate.toMillis(true);			                       
+			                       CharSequence strDate = DateFormat.format("MMMM dd, yyyy", dtDob);
+			                       Toast.makeText(ExerciseScreen.this,
+			                            "Date picked: " + strDate, Toast.LENGTH_SHORT).show();
+			           }}, 2011,0, 1);
+			         dateDlg.setMessage("When's Your Workout?");
+			         return dateDlg;
+			}
+			return null;
+		}
+		
+		@Override
+		protected void onPrepareDialog(final int id, final Dialog dialog) {
+		  switch (id) {
+		  case MY_DATE_DIALOG_ID:
+			  DatePickerDialog dateDlg = (DatePickerDialog) dialog;
+			     int iDay,iMonth,iYear;
+			     Calendar cal = Calendar.getInstance();
+			     iDay = cal.get(Calendar.DAY_OF_MONTH);
+			     iMonth = cal.get(Calendar.MONTH);
+			     iYear = cal.get(Calendar.YEAR);
+			     dateDlg.updateDate(iYear, iMonth, iDay);
+			     break;
+		  }
+		}
+		  
+		  
 }
 

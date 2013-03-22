@@ -18,9 +18,10 @@ public class ControlHelper {
 	InputFilter[] FilterArray;
 	AutoCompleteTextView actv;
 	
-	public EditText createEditText(Context ctx, String sValue, int iWidth, boolean selectOnFocus, int sInputType, int maxLength){
+	public EditText createEditText(Context ctx, String sValue, String sHint, int iWidth, boolean selectOnFocus, int sInputType, int maxLength){
 		et = new EditText(ctx);
 		et.setText(sValue);
+		et.setHint(sHint);
 		et.setWidth(iWidth);
 		et.setSelectAllOnFocus(selectOnFocus);
 		et.setFocusable(false);
@@ -35,10 +36,11 @@ public class ControlHelper {
 		return et;
 	}
 	
-	public AutoCompleteTextView  createAutoCompleteText(Context ctx, String sValue, int iWidth, boolean selectOnFocus, int sInputType, int maxLength){
+	public AutoCompleteTextView  createAutoCompleteText(Context ctx, String sValue, String sHint, int iWidth, boolean selectOnFocus, int sInputType, int maxLength){
 		actv = new AutoCompleteTextView(ctx);
 		actv.setText(sValue);
 		actv.setWidth(iWidth);
+		actv.setHint(sHint);
 		actv.setDropDownWidth(400);
 		actv.setSelectAllOnFocus(selectOnFocus);
 		actv.setFocusable(false);

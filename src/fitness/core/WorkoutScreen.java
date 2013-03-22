@@ -26,6 +26,7 @@ import android.view.Gravity;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -56,7 +57,7 @@ public class WorkoutScreen extends Activity {
 		super.onCreate(savedInstanceState);
 		
 		// style 1
-		this.setTheme(android.R.style.Theme_Black_NoTitleBar);
+		//this.setTheme(android.R.style.Theme_Black_NoTitleBar);
 		Resources res = getResources();
 		/*Resources res = getResources();
 		Drawable drawable = res.getDrawable(R.drawable.di_sails_dark_gray_mdpi2); 
@@ -137,18 +138,39 @@ public class WorkoutScreen extends Activity {
 		topLevelView.addView(save, lpSave);
     	ll.addView(topLevelView);
     	
-		controlHelper = new ControlHelper();		
+		controlHelper = new ControlHelper();
+		
+		RelativeLayout rlWorkoutRow = new RelativeLayout(this);
+		LayoutParams lpWorkoutRow = new LayoutParams(LayoutParams.MATCH_PARENT,LayoutParams.MATCH_PARENT);
+		rlWorkoutRow.setPadding(0, 10, 0, 10);
+		rlWorkoutRow.setLayoutParams(lpWorkoutRow);
+		rlWorkoutRow.setId(iViewCounter++);
+		Button bClear;
 		
 		if (workoutCursor != null && workoutCursor.moveToFirst()) {
 	        do {
+	        	/**  add textview for workout name */
 				vt = new TextView(this);
-				vt.setWidth(80);
+				vt.setId(iViewCounter++);
+				vt.setWidth((int)(screenWidth * 0.8));  /** 80% width of screen */
 				vt.setTag(workoutCursor.getString(0));
-				vt.setText(workoutCursor.getString(1));
+				vt.setText(workoutCursor.getString(1));				
 				vt.setTextAppearance(this, R.style.workoutTextView);				
 				vt.setBackgroundColor(Color.parseColor("#CFECEC"));
-				ll.addView(vt);
+				vt.setSingleLine(true);
 				vt.setOnClickListener(openExercise);
+				rlWorkoutRow.addView(vt);
+				
+				/** add button for remove of workout name */
+				lpAdd = new LayoutParams(LayoutParams.WRAP_CONTENT,LayoutParams.WRAP_CONTENT);
+				lpAdd.addRule(RelativeLayout.RIGHT_OF, vt.getId());				
+				bClear = new Button(this);
+				bClear.setText("Clear"); /** to be changed to delete image */
+				bClear.setGravity(Gravity.RIGHT);
+				bClear.setWidth((int)(screenWidth * 0.2)); /** 20% width of screen */
+				rlWorkoutRow.addView(bClear, lpAdd);
+				ll.addView(rlWorkoutRow);
+				
 	        } while (workoutCursor.moveToNext());
     	}/*else{
     		
@@ -184,8 +206,8 @@ public class WorkoutScreen extends Activity {
 	    	llAddNewRow.setOrientation(LinearLayout.HORIZONTAL);
 	    	llAddNewRow.setId(iViewCounter++);
 	    	
-	    	et = controlHelper.createEditText(WorkoutScreen.this, "", 500, true, InputType.TYPE_CLASS_TEXT|InputType.TYPE_TEXT_FLAG_CAP_WORDS, 80);	
-			et.setHint("Set workout name");
+	    	et = controlHelper.createEditText(WorkoutScreen.this, "", "Enter workout name", 500, true, InputType.TYPE_CLASS_TEXT|InputType.TYPE_TEXT_FLAG_CAP_WORDS, 80);	
+			et.setHint("Enter workout name");
 	    	editTextList.add(et);
 			llAddNewRow.addView(et);		
 			
