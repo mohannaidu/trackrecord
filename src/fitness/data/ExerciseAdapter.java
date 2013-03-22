@@ -61,7 +61,12 @@ public class ExerciseAdapter {
     }
    
     public long createEntry(Exercise exercise){
-        ContentValues cv = new ContentValues();
+    	Cursor checkExercise = null;
+    	
+		checkExercise = this.getExercise(exercise.getExercise());
+		
+    	if (checkExercise.getCount() == 0){
+        	ContentValues cv = new ContentValues();
         	cv.put(KEY_NAME, exercise.getExercise());
 			cv.put(KEY_WEIGHT, exercise.getWeight());
 			cv.put(KEY_SETS, exercise.getSets());
@@ -71,7 +76,13 @@ public class ExerciseAdapter {
 			cv.put(KEY_REST, exercise.getRest());
 			cv.put(KEY_WORKOUTID, exercise.getWorkoutID());
 			cv.put(KEY_ORDERING_VALUE, exercise.getOrderingValue());
-        return this.mDb.insert(DATABASE_TABLE, null, cv);
+			return this.mDb.insert(DATABASE_TABLE, null, cv);
+    	}else{
+    		if (this.updateExercise(exercise))
+    			return 0;
+    		else
+    			return -1;
+        }
     }
     
     public boolean deleteExercise(long rowId) {
@@ -84,25 +95,37 @@ public class ExerciseAdapter {
         		KEY_WEIGHT, KEY_SETS, KEY_REPS, KEY_TARGET, KEY_TEMPO, KEY_REST }, null, null, null, null, null);
     }
     
-    /*public Cursor getExercise(long rowId) throws SQLException {
+    public Cursor getExercise(String exercise) {
 
-        Cursor mCursor =
-
-        this.mDb.query(true, DATABASE_TABLE, new String[] { ROW_ID, NAME,
-                MODEL, YEAR}, ROW_ID + "=" + rowId, null, null, null, null, null);
+        Cursor mCursor = null;
+        // Wrap the next line in try-catch
+        try{
+        	//mCursor = this.mDb.rawQuery("SELECT name FROM " + DATABASE_TABLE +  " WHERE like '" + exercise + "%'", null);
+        	mCursor = this.mDb.query(DATABASE_TABLE, new String[] {
+        			  KEY_ROWID, KEY_NAME, KEY_SETS }, KEY_NAME + " = ?", new String[] { exercise },
+        			  null, null, null, null);
+        }catch(Exception e){
+        	e.printStackTrace();        	
+        }
+        
         if (mCursor != null) {
             mCursor.moveToFirst();
         }
         return mCursor;
     }
-    
-    public boolean updateExercise(long rowId, String name, String model,String year){
-        ContentValues args = new ContentValues();
-        args.put(NAME, name);
-        args.put(MODEL, model);
-        args.put(YEAR, year);
+   
+    public boolean updateExercise(Exercise exercise){
+    	ContentValues cv = new ContentValues();
+		cv.put(KEY_WEIGHT, exercise.getWeight());
+		cv.put(KEY_SETS, exercise.getSets());
+		cv.put(KEY_REPS, exercise.getReps());
+		cv.put(KEY_TARGET, exercise.getTarget());
+		cv.put(KEY_TEMPO, exercise.getTempo());
+		cv.put(KEY_REST, exercise.getRest());
+		cv.put(KEY_WORKOUTID, exercise.getWorkoutID());
+		cv.put(KEY_ORDERING_VALUE, exercise.getOrderingValue());
 
-        return this.mDb.update(DATABASE_TABLE, args, ROW_ID + "=" + rowId, null) >0; 
-    }*/
+        return this.mDb.update(DATABASE_TABLE, cv, KEY_NAME + "='" + exercise.getExercise() + "'", null) >0; 
+    }
 
 }

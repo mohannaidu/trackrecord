@@ -37,7 +37,8 @@ public class WorkoutAdapter {
 
         @Override
         public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-       	 	db.execSQL("DROP TABLE IF EXISTS " + DATABASE_TABLE);
+	       	 db.execSQL("DROP TABLE IF EXISTS " + WorkoutAdapter.DATABASE_TABLE);
+	         db.execSQL("DROP TABLE IF EXISTS " + ExerciseAdapter.DATABASE_TABLE);
         }
     }
    

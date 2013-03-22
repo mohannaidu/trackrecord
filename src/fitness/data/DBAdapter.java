@@ -10,7 +10,7 @@ public class DBAdapter {
     public static final String DATABASE_NAME = "fitness.db"; 	
     public static final String DATABASE_TABLE1 = "workout";	
 	public static final String DATABASE_TABLE2 = "exercise";
-    public static final int DATABASE_VERSION = 4;
+    public static final int DATABASE_VERSION = 1;
 
 	public static final String WorkoutTable = "CREATE TABLE " + DATABASE_TABLE1 + " (" +
 			WorkoutAdapter.KEY_ROWID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +

@@ -244,7 +244,10 @@ public class ExerciseScreen extends Activity {
 			}
 			try {
 				exerciseCursor = helper.getAllExercise();
-				exerciseCursor.moveToFirst();
+				if (exerciseCursor.getCount() == 0)
+					exerciseCursor = null;
+				else
+					exerciseCursor.moveToFirst();
 			} catch (Exception e) {}
 				
 	        do {
@@ -269,11 +272,11 @@ public class ExerciseScreen extends Activity {
 				editTextList.add(et);
 				ll.addView(et);
 				
-				et = controlHelper.createEditText(this, (exerciseCursor == null) ?  "" : exerciseCursor.getString(3), "4", (int) (repsPct * screenWidth), true, InputType.TYPE_CLASS_NUMBER, 3);
+				et = controlHelper.createEditText(this, (exerciseCursor == null) ?  "" : exerciseCursor.getString(3), "8", (int) (repsPct * screenWidth), true, InputType.TYPE_CLASS_NUMBER, 3);
 				editTextList.add(et);
 				ll.addView(et);
 				
-				et = controlHelper.createEditText(this, (exerciseCursor == null) ?  "" : exerciseCursor.getString(4), "4", (int) (targetPct * screenWidth), true, InputType.TYPE_CLASS_NUMBER, 3);
+				et = controlHelper.createEditText(this, (exerciseCursor == null) ?  "" : exerciseCursor.getString(4), "8", (int) (targetPct * screenWidth), true, InputType.TYPE_CLASS_NUMBER, 3);
 				editTextList.add(et);
 				ll.addView(et);
 				
@@ -367,11 +370,11 @@ public class ExerciseScreen extends Activity {
 				editTextList.add(et);
 				llAddNewRow.addView(et);
 				
-				et = controlHelper.createEditText(ExerciseScreen.this, "", "4", (int) (repsPct * screenWidth), true, InputType.TYPE_CLASS_NUMBER, 3);
+				et = controlHelper.createEditText(ExerciseScreen.this, "", "8", (int) (repsPct * screenWidth), true, InputType.TYPE_CLASS_NUMBER, 3);
 				editTextList.add(et);
 				llAddNewRow.addView(et);
 				
-				et = controlHelper.createEditText(ExerciseScreen.this, "", "4", (int) (targetPct * screenWidth), true, InputType.TYPE_CLASS_NUMBER, 3);
+				et = controlHelper.createEditText(ExerciseScreen.this, "", "8", (int) (targetPct * screenWidth), true, InputType.TYPE_CLASS_NUMBER, 3);
 				editTextList.add(et);
 				llAddNewRow.addView(et);
 				
@@ -412,13 +415,7 @@ public class ExerciseScreen extends Activity {
 				// Assumption is that 10 rows are max listed in the screen
 				String valList[] = new String[editTextList.size()+10];
 				int i = 0;
-				
-				
-				/* 
-				 * need to check for existing data before saving. 
-				 * 		- if new, add new entry
-				 * 		- if existing, update the entries								
-				*/
+				boolean bSaved = true;
 				
 				for (EditText editText : editTextList) {
 					Log.d("MyApp",editText.getText().toString());
@@ -458,13 +455,18 @@ public class ExerciseScreen extends Activity {
 						exercise.setRest(valList[k]);
 						//later need to be included in the screen
 						exercise.setOrderingValue("0");							
-						helper.createEntry(exercise);							
+						if (helper.createEntry(exercise) == -1)
+							bSaved = false;						
 						exercise = new Exercise();
 						break;
 						
 					}
+					
+					if (!bSaved)
+						break;
 				}
-				Toast.makeText(getApplicationContext(), "Saved", Toast.LENGTH_SHORT).show();
+				if (bSaved)
+					Toast.makeText(getApplicationContext(), "Saved", Toast.LENGTH_SHORT).show();
 			}
 		};
 		
