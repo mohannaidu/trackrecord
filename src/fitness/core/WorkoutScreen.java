@@ -22,6 +22,7 @@ import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.os.Handler;
 import android.text.InputType;
+import android.text.format.Time;
 import android.util.Log;
 import android.view.Display;
 import android.view.Gravity;
@@ -46,13 +47,15 @@ public class WorkoutScreen extends Activity {
 	LayoutParams lpSave;	
 	LayoutParams lpAdd;
 	LayoutParams lp;
-	LinearLayout ll;
+	RelativeLayout rl;
 	ControlHelper controlHelper; 
 	Cursor workoutCursor;
 	Display display;
 	Point size;
 	int screenWidth;
 	protected Dialog mSplashDialog;
+	RelativeLayout rlWorkoutRow;
+	LayoutParams lpWorkoutRow; 
 	
 	@SuppressLint("NewApi")
 	@Override
@@ -65,9 +68,8 @@ public class WorkoutScreen extends Activity {
 		/*Resources res = getResources();
 		Drawable drawable = res.getDrawable(R.drawable.di_sails_dark_gray_mdpi2); 
 		getWindow().getDecorView().setBackground(drawable);
-		
 		*/
-		//showSplashScreen();
+
 		
 		display = getWindowManager().getDefaultDisplay();
         size = new Point();
@@ -87,7 +89,6 @@ public class WorkoutScreen extends Activity {
 		try {
 			helper.open();
 		} catch (SQLException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		
@@ -97,8 +98,8 @@ public class WorkoutScreen extends Activity {
 			
 		}
 		
-		ll = new LinearLayout(this);
-    	ll.setOrientation(LinearLayout.VERTICAL);
+		rl = new RelativeLayout(this);
+    	rl.setId(iViewCounter++);
     	
     	// style 2
     	TextView tv = new TextView(this);    	
@@ -109,10 +110,10 @@ public class WorkoutScreen extends Activity {
     	tv.setTextAppearance(this, android.R.style.TextAppearance_DeviceDefault_Large);
     	tv.setText("Fitness Tracker");
     	tv.setTextColor(Color.BLACK);    	
-    	ll.addView(tv);
+    	rl.addView(tv);
     	
     	RelativeLayout topLevelView = new RelativeLayout(this);
-    	
+    	topLevelView.setId(iViewCounter++);
     	
     	Button add = new Button(this);
 		add.setText("New");
@@ -122,9 +123,7 @@ public class WorkoutScreen extends Activity {
 		add.setId(iViewCounter++);
 		
 		lpAdd = new LayoutParams(LayoutParams.WRAP_CONTENT,LayoutParams.WRAP_CONTENT);
-		//lpAdd.setMargins(300, 0, 0, 0);
-		//lpAdd.addRule(RelativeLayout.LEFT_OF, ll.getId());
-		
+	
 		save = new Button(this);
 		save.setText("Save");
 		save.setId(iViewCounter++);
@@ -140,19 +139,27 @@ public class WorkoutScreen extends Activity {
 		
 		topLevelView.addView(add, lpAdd);	
 		topLevelView.addView(save, lpSave);
-    	ll.addView(topLevelView);
-    	
-		controlHelper = new ControlHelper();
 		
-		RelativeLayout rlWorkoutRow = new RelativeLayout(this);
-		LayoutParams lpWorkoutRow = new LayoutParams(LayoutParams.MATCH_PARENT,LayoutParams.MATCH_PARENT);
-		rlWorkoutRow.setPadding(0, 10, 0, 10);
-		rlWorkoutRow.setLayoutParams(lpWorkoutRow);
-		rlWorkoutRow.setId(iViewCounter++);
+		lpTopView = new LayoutParams(LayoutParams.WRAP_CONTENT,LayoutParams.WRAP_CONTENT);
+		lpTopView.addRule(RelativeLayout.BELOW, tv.getId());
+    	rl.addView(topLevelView, lpTopView);
+    	
+    	lp = new LayoutParams(LayoutParams.WRAP_CONTENT,LayoutParams.WRAP_CONTENT);
+		lp.addRule(RelativeLayout.BELOW, topLevelView.getId());	
+		
+		controlHelper = new ControlHelper();
+				
 		Button bClear;
 		
 		if (workoutCursor != null && workoutCursor.moveToFirst()) {
 	        do {
+	        	/** adding relative layout */
+	        	rlWorkoutRow = new RelativeLayout(this);
+	    		lpWorkoutRow = new LayoutParams(LayoutParams.MATCH_PARENT,LayoutParams.MATCH_PARENT);
+	    		rlWorkoutRow.setPadding(0, 10, 0, 0);
+	    		rlWorkoutRow.setLayoutParams(lpWorkoutRow);
+	    		rlWorkoutRow.setId(iViewCounter++);
+	    		
 	        	/**  add textview for workout name */
 				vt = new TextView(this);
 				vt.setId(iViewCounter++);
@@ -173,7 +180,11 @@ public class WorkoutScreen extends Activity {
 				bClear.setGravity(Gravity.RIGHT);
 				bClear.setWidth((int)(screenWidth * 0.2)); /** 20% width of screen */
 				rlWorkoutRow.addView(bClear, lpAdd);
-				ll.addView(rlWorkoutRow);
+				rl.addView(rlWorkoutRow, lp);
+				
+				lp = new LayoutParams(LayoutParams.WRAP_CONTENT,LayoutParams.WRAP_CONTENT);
+				lp.addRule(RelativeLayout.BELOW, rlWorkoutRow.getId());	
+				
 				
 	        } while (workoutCursor.moveToNext());
     	}/*else{
@@ -181,12 +192,12 @@ public class WorkoutScreen extends Activity {
     		et = controlHelper.createEditText(this, "", 80, true, InputType.TYPE_CLASS_TEXT|InputType.TYPE_TEXT_FLAG_CAP_WORDS, 80);
 			et.setTextColor(Color.parseColor("#00ccff"));
 			editTextList.add(et);
-			ll.addView(et);
+			rl.addView(et);
     	}*/
 		
     	
     	
-		this.setContentView(ll);
+		this.setContentView(rl);
 		//removeSplashScreen();
 	}
 	
@@ -216,21 +227,21 @@ public class WorkoutScreen extends Activity {
 	    	editTextList.add(et);
 			llAddNewRow.addView(et);		
 			
-			//View button = ll.getChildAt(ll.getChildCount()-1);
-			//ll.removeViewAt(ll.getChildCount()-1);
+			//View button = rl.getChildAt(rl.getChildCount()-1);
+			//rl.removeViewAt(rl.getChildCount()-1);
 			
 			// need to check if this is the first row to be added or not; cos it will throw exception
-			View lastLinearLayout = ll.getChildAt(ll.getChildCount()-1);
+			View lastLinearLayout = rl.getChildAt(rl.getChildCount()-1);
 			
 			
 			lp = new LayoutParams(LayoutParams.WRAP_CONTENT,LayoutParams.WRAP_CONTENT);
 			lp.addRule(RelativeLayout.BELOW, lastLinearLayout.getId());
-			ll.addView(llAddNewRow, lp);	
+			rl.addView(llAddNewRow, lp);	
 			/*
 			//retrieve save button from relativelayout and get re-add below the layout				
 			lpSave = new LayoutParams(LayoutParams.WRAP_CONTENT,LayoutParams.WRAP_CONTENT);
 			lpSave.addRule(RelativeLayout.BELOW, llAddNewRow.getId());
-			ll.addView(button, lpSave);*/
+			rl.addView(button, lpSave);*/
 			
 		}
 	};
@@ -252,11 +263,20 @@ public class WorkoutScreen extends Activity {
 			for (int k=0 ; k<i ; k++){				
 			//exercise.setExercise(e.getText().toString());		
 				workout.setName(valList[k]);
-				workout.setDateCreated(new Date());
+				
+				/** setting date */
+				Time newTime = new Time();
+				newTime.setToNow();
+		    	workout.setDateCreated(newTime);
 				workout.setOrderingValue(1);
 				helper.createEntry(workout);
 			}
 			Toast.makeText(getApplicationContext(), "Saved", Toast.LENGTH_SHORT).show();
+			
+			/** reload activity */
+			onCreate(null);
+			/*finish();
+			startActivity(getIntent());*/
 		}
 	};
 	

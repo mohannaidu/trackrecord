@@ -9,6 +9,7 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.text.format.DateFormat;
 
 public class WorkoutAdapter {
     	public static final String KEY_ROWID = "_id";
@@ -59,8 +60,10 @@ public class WorkoutAdapter {
     public long createEntry(Workout workout){
         ContentValues cv = new ContentValues();
         cv.put(KEY_NAME, workout.getName());
-	cv.put(KEY_DATE_CREATED, workout.getDateCreated().toString());
-	cv.put(KEY_ORDERING_VALUE, workout.getOrderingValue());
+        /** setting date for exercise */ 
+    	long dtDob = workout.getDateCreated().toMillis(true); 
+		cv.put(KEY_DATE_CREATED, DateFormat.format("dd-MM-yy", dtDob).toString());
+        cv.put(KEY_ORDERING_VALUE, workout.getOrderingValue());
         return this.mDb.insert(DATABASE_TABLE, null, cv);
     }
     

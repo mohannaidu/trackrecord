@@ -1,5 +1,9 @@
 package fitness.model;
 
+import java.util.Date;
+
+import android.text.format.Time;
+
 public class Exercise {
 	private String exercise = "";
 	private String weight = "0.0";
@@ -10,6 +14,7 @@ public class Exercise {
 	private String rest = "0";
 	private String orderingValue = "0";
 	private String workoutID = "0";
+	private Time dateEntered;
 	
 	public String getExercise() {
 		return exercise;
@@ -65,6 +70,13 @@ public class Exercise {
 	}
 	public void setWorkoutID(String workoutID) {
 		this.workoutID = workoutID;
+	}
+	
+	public Time getDateEntered() {
+		return dateEntered;
+	}
+	public void setDateEntered(Time dateEntered) {
+		this.dateEntered = dateEntered;
 	}
 	
 		

@@ -27,6 +27,7 @@ public class DBAdapter {
 			ExerciseAdapter.KEY_TARGET + " TEXT, " + 
 			ExerciseAdapter.KEY_TEMPO + " TEXT, " + 
 			ExerciseAdapter.KEY_REST + " TEXT, " + 
+			ExerciseAdapter.KEY_DATE_ENTERED + " TEXT, " + 
 			ExerciseAdapter.KEY_ORDERING_VALUE + " TEXT, " +
 			ExerciseAdapter.KEY_WORKOUTID + " TEXT, "  +
 			"FOREIGN KEY(" + ExerciseAdapter.KEY_WORKOUTID + ") REFERENCES " +

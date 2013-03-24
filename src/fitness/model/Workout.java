@@ -1,12 +1,14 @@
 package fitness.model;
 
-import java.util.Date;
+
 import java.util.List;
+
+import android.text.format.Time;
 
 public class Workout {
 	private String name = "";
 	private int orderingValue = 0;
-	private Date dateCreated;
+	private Time dateCreated;
 	private List<Exercise> exercise;
 	
 	public String getName() {
@@ -21,10 +23,10 @@ public class Workout {
 	public void setOrderingValue(int orderingValue) {
 		this.orderingValue = orderingValue;
 	}
-	public Date getDateCreated() {
+	public Time getDateCreated() {
 		return dateCreated;
 	}
-	public void setDateCreated(Date dateCreated) {
+	public void setDateCreated(Time dateCreated) {
 		this.dateCreated = dateCreated;
 	}
 	

@@ -2,10 +2,8 @@ package fitness.core;
 
 
 import java.sql.SQLException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Date;
 import java.util.List;
 
 import fitness.data.ExerciseAdapter;
@@ -15,16 +13,13 @@ import sra.gg.R;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
-import android.app.AlertDialog;
 import android.app.DatePickerDialog;
 import android.app.Dialog;
-import android.content.DialogInterface;
 import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.database.Cursor;
 import android.graphics.Color;
 import android.graphics.Point;
-import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.text.InputType;
 import android.text.format.DateFormat;
@@ -52,6 +47,7 @@ public class ExerciseScreen extends Activity {
 	private static Time exerciseDate = new Time();
 	private List<EditText> editTextList = new ArrayList<EditText>();
 	ExerciseAdapter helper;
+	TextView tvCalendar;
 	ControlHelper controlHelper; 
 	ScrollView sv;
 	RelativeLayout rl;
@@ -74,6 +70,7 @@ public class ExerciseScreen extends Activity {
     Double targetPct;
     Double tempoPct;
     Double restPct;
+    private static boolean bDateAvailable = false;
 	
 	@SuppressLint({ "NewApi", "ResourceAsColor" })
 	@SuppressWarnings("deprecation")
@@ -128,29 +125,27 @@ public class ExerciseScreen extends Activity {
 			/** Calendar Display */
 			lpAdd = new LayoutParams(LayoutParams.WRAP_CONTENT,LayoutParams.WRAP_CONTENT);
 			lpAdd.addRule(RelativeLayout.RIGHT_OF, tv.getId());
-			tv = new TextView(this);
-	    	tv.setWidth(screenWidth/2);
-	    	tv.setGravity(Gravity.RIGHT);
+			tvCalendar = new TextView(this);
+			tvCalendar.setWidth(screenWidth/2);
+			tvCalendar.setGravity(Gravity.RIGHT);
 	    	
 	    	// should initialize in the different place cos if rotate will reset to old value
-	    	exerciseDate.setToNow();
+			if (!bDateAvailable)
+				exerciseDate.setToNow();
 	    	long dtDob = exerciseDate.toMillis(true);    	
-			tv.setText(DateFormat.format("dd-MM-yy", dtDob));
-			tv.setTextAppearance(this, R.style.calendarTextView);		
-			tv.setBackgroundColor(getResources().getColor(R.color.orange));
-			tv.setOnClickListener(new View.OnClickListener() {
+	    	tvCalendar.setText(DateFormat.format("dd-MM-yy", dtDob));
+	    	tvCalendar.setTextAppearance(this, R.style.calendarTextView);		
+	    	tvCalendar.setBackgroundColor(getResources().getColor(R.color.orange));
+	    	tvCalendar.setOnClickListener(new View.OnClickListener() {
 				
 				@Override
 				public void onClick(View v) {
 					showDialog(MY_DATE_DIALOG_ID);
 				}
 			});
-			tv.setId(iViewCounter++);
+	    	tvCalendar.setId(iViewCounter++);
 			
-			rlTopView.addView(tv, lpAdd);
-			//ll.addView(tv);
-	    	
-			//rl.addView(ll);
+			rlTopView.addView(tvCalendar, lpAdd);			
 			rl.addView(rlTopView);
 			
 			Resources res = getResources();
@@ -243,11 +238,14 @@ public class ExerciseScreen extends Activity {
 				e.printStackTrace();
 			}
 			try {
-				exerciseCursor = helper.getAllExercise();
+				/** Get all exercises logged for the selected day */
+				exerciseCursor = helper.getAllExercise(exerciseDate);
 				if (exerciseCursor.getCount() == 0)
-					exerciseCursor = null;
-				else
+					exerciseCursor = null;					
+				else{
 					exerciseCursor.moveToFirst();
+					bDateAvailable = true;
+				}
 			} catch (Exception e) {}
 				
 	        do {
@@ -291,6 +289,22 @@ public class ExerciseScreen extends Activity {
 				et = controlHelper.createEditText(this, (exerciseCursor == null) ?  "" : exerciseCursor.getString(6), "30", (int) (restPct * screenWidth), true, InputType.TYPE_CLASS_NUMBER, 3);
 				editTextList.add(et);
 				ll.addView(et);
+							
+				/** need to check in debug */
+				if (exerciseCursor != null){
+					char[] date = new char[2];
+					char[] month = new char[2];
+					char[] year = new char[2];
+					exerciseCursor.getString(7).getChars(0, 2, date, 0);
+					exerciseCursor.getString(7).getChars(3, 2, month, 0);
+					exerciseCursor.getString(7).getChars(6, 2, year, 0);
+					
+					exerciseDate.set(Integer.parseInt(new String(date)), Integer.parseInt(new String(month)), Integer.parseInt(new String(year)));
+					dtDob = exerciseDate.toMillis(true);    	
+			    	tvCalendar.setText(DateFormat.format("dd-MM-yy", dtDob));
+										
+				}
+					
 						
 				rl.addView(ll, lp);	
 				lp = new LayoutParams(LayoutParams.WRAP_CONTENT,LayoutParams.WRAP_CONTENT);
@@ -453,8 +467,12 @@ public class ExerciseScreen extends Activity {
 						break;
 					case 7:
 						exercise.setRest(valList[k]);
+						
+						/** setting date for exercise */ 	
+				    	exercise.setDateEntered(exerciseDate);
+						
 						//later need to be included in the screen
-						exercise.setOrderingValue("0");							
+						exercise.setOrderingValue("0");						
 						if (helper.createEntry(exercise) == -1)
 							bSaved = false;						
 						exercise = new Exercise();
@@ -465,8 +483,10 @@ public class ExerciseScreen extends Activity {
 					if (!bSaved)
 						break;
 				}
-				if (bSaved)
+				if (bSaved){
 					Toast.makeText(getApplicationContext(), "Saved", Toast.LENGTH_SHORT).show();
+					releaseFocus();
+				}
 			}
 		};
 		
@@ -486,8 +506,10 @@ public class ExerciseScreen extends Activity {
 			                       Time chosenDate = new Time();
 			                       chosenDate.set(dayOfMonth, monthOfYear, year);
 			                       exerciseDate = chosenDate;
+			                       bDateAvailable = true;
 			                       long dtDob = exerciseDate.toMillis(true);			                       
-			                       CharSequence strDate = DateFormat.format("MMMM dd, yyyy", dtDob);
+			                       CharSequence strDate = DateFormat.format("dd-MM-yy", dtDob);
+			                       tvCalendar.setText(strDate);
 			                       Toast.makeText(ExerciseScreen.this,
 			                            "Date picked: " + strDate, Toast.LENGTH_SHORT).show();
 			           }}, 2011,0, 1);
@@ -510,6 +532,13 @@ public class ExerciseScreen extends Activity {
 			     dateDlg.updateDate(iYear, iMonth, iDay);
 			     break;
 		  }
+		}
+		
+		private void releaseFocus(){
+			for (EditText editText : editTextList) {
+				editText.setFocusable(false);				
+				editText.setFocusableInTouchMode(false);
+            }
 		}
 		  
 		  
