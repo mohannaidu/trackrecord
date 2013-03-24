@@ -24,11 +24,11 @@ public final class R {
         public static final int white=0x7f040007;
     }
     public static final class drawable {
-        public static final int bodybuilding=0x7f020000;
-        public static final int call_history=0x7f020001;
-        public static final int cb=0x7f020002;
-        public static final int di_sails_dark_gray_mdpi=0x7f020003;
-        public static final int di_sails_dark_gray_mdpi2=0x7f020004;
+        public static final int call_history=0x7f020000;
+        public static final int cb=0x7f020001;
+        public static final int di_sails_dark_gray_mdpi=0x7f020002;
+        public static final int di_sails_dark_gray_mdpi2=0x7f020003;
+        public static final int front=0x7f020004;
         public static final int icon=0x7f020005;
         public static final int info_btn=0x7f020006;
         public static final int my_contract=0x7f020007;
