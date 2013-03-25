@@ -25,6 +25,7 @@
                   	android:configChanges="keyboardHidden"
                   	android:label="Fitness Tracker"></activity>
       	 <activity android:name="fitness.core.HomeScreen"></activity>
+      	 <activity android:name="fitness.core.ProgressScreen"></activity>
       	 <activity android:name="fitness.core.WorkoutScreen"></activity>
     </application>
 </manifest>

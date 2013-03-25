@@ -89,6 +89,7 @@ public class ExerciseScreen extends Activity {
 			
 			//pale blue bg
 			getWindow().getDecorView().setBackgroundColor(Color.parseColor("#AFC7C7"));
+			this.setTitle(getIntent().getStringExtra("workoutTitle"));
 			
 			display = getWindowManager().getDefaultDisplay();
 	        size = new Point();

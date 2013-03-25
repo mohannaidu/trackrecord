@@ -28,27 +28,31 @@ public final class R {
         public static final int cb=0x7f020001;
         public static final int di_sails_dark_gray_mdpi=0x7f020002;
         public static final int di_sails_dark_gray_mdpi2=0x7f020003;
-        public static final int front=0x7f020004;
-        public static final int icon=0x7f020005;
-        public static final int info_btn=0x7f020006;
-        public static final int my_contract=0x7f020007;
-        public static final int my_crm=0x7f020008;
-        public static final int my_invoice=0x7f020009;
-        public static final int red_button=0x7f02000a;
-        public static final int sisteer_logo_1=0x7f02000b;
-        public static final int usapissue=0x7f02000c;
-        public static final int user_details=0x7f02000d;
+        public static final int empty_white_box=0x7f020004;
+        public static final int front=0x7f020005;
+        public static final int icon=0x7f020006;
+        public static final int info_btn=0x7f020007;
+        public static final int my_contract=0x7f020008;
+        public static final int my_crm=0x7f020009;
+        public static final int my_invoice=0x7f02000a;
+        public static final int prefs=0x7f02000b;
+        public static final int progress=0x7f02000c;
+        public static final int red_button=0x7f02000d;
+        public static final int sisteer_logo_1=0x7f02000e;
+        public static final int usapissue=0x7f02000f;
+        public static final int user_details=0x7f020010;
+        public static final int workout=0x7f020011;
     }
     public static final class id {
-        public static final int editText1=0x7f070001;
-        public static final int imageView1=0x7f070000;
-        public static final int textView1=0x7f070002;
+        public static final int imageView1=0x7f070001;
+        public static final int mySimpleXYPlot=0x7f070000;
     }
     public static final class layout {
         public static final int activityfadein=0x7f030000;
-        public static final int splash=0x7f030001;
-        public static final int splashfadeout=0x7f030002;
-        public static final int test=0x7f030003;
+        public static final int main=0x7f030001;
+        public static final int splash=0x7f030002;
+        public static final int splashfadeout=0x7f030003;
+        public static final int test=0x7f030004;
     }
     public static final class style {
         public static final int SplashScreen=0x7f060004;
