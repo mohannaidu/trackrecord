@@ -102,7 +102,7 @@ public class ExerciseAdapter {
         try{
         	
         	mCursor = this.mDb.query(DATABASE_TABLE, new String[] {
-        			KEY_NAME, KEY_WEIGHT, KEY_SETS, KEY_REPS, KEY_TARGET, KEY_TEMPO, KEY_REST, KEY_DATE_ENTERED }, KEY_DATE_ENTERED + " = " + DateFormat.format("dd-MM-yy", dtDob).toString(), 
+        			KEY_NAME, KEY_WEIGHT, KEY_SETS, KEY_REPS, KEY_TARGET, KEY_TEMPO, KEY_REST, KEY_DATE_ENTERED }, KEY_DATE_ENTERED + " = '" + DateFormat.format("dd-MM-yy", dtDob).toString() + "'", 
         			  null, null, null, null, null);
         }catch(Exception e){
         	e.printStackTrace();        	
@@ -126,7 +126,7 @@ public class ExerciseAdapter {
         	long dtDob = dateEntered.toMillis(true); 
         	
         	mCursor = this.mDb.query(DATABASE_TABLE, new String[] {
-        			  KEY_ROWID, KEY_NAME, KEY_SETS }, KEY_NAME + " = '" + exercise + "' AND " + KEY_DATE_ENTERED + " = " + DateFormat.format("dd-MM-yy", dtDob).toString(), 
+        			  KEY_ROWID, KEY_NAME, KEY_SETS }, KEY_NAME + " = '" + exercise + "' AND " + KEY_DATE_ENTERED + " = '" + DateFormat.format("dd-MM-yy", dtDob).toString() + "'", 
         			  null, null, null, null, null);
         }catch(Exception e){
         	e.printStackTrace();        	

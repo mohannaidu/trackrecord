@@ -296,10 +296,10 @@ public class ExerciseScreen extends Activity {
 					char[] month = new char[2];
 					char[] year = new char[2];
 					exerciseCursor.getString(7).getChars(0, 2, date, 0);
-					exerciseCursor.getString(7).getChars(3, 2, month, 0);
-					exerciseCursor.getString(7).getChars(6, 2, year, 0);
+					exerciseCursor.getString(7).getChars(3, 5, month, 0);
+					exerciseCursor.getString(7).getChars(6, 8, year, 0);
 					
-					exerciseDate.set(Integer.parseInt(new String(date)), Integer.parseInt(new String(month)), Integer.parseInt(new String(year)));
+					exerciseDate.set(Integer.parseInt(new String(date)), Integer.parseInt(new String(month))-1, Integer.parseInt("20" + new String(year)));
 					dtDob = exerciseDate.toMillis(true);    	
 			    	tvCalendar.setText(DateFormat.format("dd-MM-yy", dtDob));
 										
@@ -510,10 +510,13 @@ public class ExerciseScreen extends Activity {
 			                       long dtDob = exerciseDate.toMillis(true);			                       
 			                       CharSequence strDate = DateFormat.format("dd-MM-yy", dtDob);
 			                       tvCalendar.setText(strDate);
-			                       Toast.makeText(ExerciseScreen.this,
-			                            "Date picked: " + strDate, Toast.LENGTH_SHORT).show();
+			                       //Toast.makeText(ExerciseScreen.this,"Date picked: " + strDate, Toast.LENGTH_SHORT).show();
+			                       /** restart the whole screen with updated values */
+			                       finish();
+			  			           startActivity(getIntent());
 			           }}, 2011,0, 1);
 			         dateDlg.setMessage("When's Your Workout?");
+			         
 			         return dateDlg;
 			}
 			return null;
