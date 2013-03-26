@@ -117,6 +117,16 @@ public class ExerciseAdapter {
         //		KEY_WEIGHT, KEY_SETS, KEY_REPS, KEY_TARGET, KEY_TEMPO, KEY_REST, KEY_DATE_ENTERED }, null, null, null, null, null);
     }
     
+    public Cursor getAllExerciseName(){
+    	String query ="SELECT DISTINCT " + KEY_NAME + ", 'id' as " + KEY_ROWID + " FROM " + DATABASE_TABLE;
+
+        Cursor  cursor =  this.mDb.rawQuery(query,null);
+          if (cursor != null) {
+              cursor.moveToFirst();
+          }
+          return cursor;     
+    }
+    
     public Cursor getExercise(String exercise, Time dateEntered) {
 
         Cursor mCursor = null;
