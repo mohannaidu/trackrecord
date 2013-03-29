@@ -147,6 +147,27 @@ public class ExerciseAdapter {
         }
         return mCursor;
     }
+    
+    public Cursor getExercise(String exercise) {
+
+        Cursor mCursor = null;
+        // Wrap the next line in try-catch
+        try{
+        	//mCursor = this.mDb.rawQuery("SELECT name FROM " + DATABASE_TABLE +  " WHERE like '" + exercise + "%'", null);
+        	
+        	
+        	mCursor = this.mDb.query(DATABASE_TABLE, new String[] {
+        			  KEY_NAME, KEY_DATE_ENTERED, KEY_WEIGHT }, KEY_NAME + " = '" + exercise + "'", 
+        			  null, null, null, KEY_DATE_ENTERED + " ASC", null);
+        }catch(Exception e){
+        	e.printStackTrace();        	
+        }
+        
+        if (mCursor != null) {
+            mCursor.moveToFirst();
+        }
+        return mCursor;
+    }
    
     public boolean updateExercise(Exercise exercise){
     	ContentValues cv = new ContentValues();

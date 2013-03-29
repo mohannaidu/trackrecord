@@ -1,114 +1,114 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string-array name="muscle_array">
-        <item>Dumbbell pullover</item>
-		<item>Dumbbell one-arm row</item>
-		<item>T-bar row</item>
-		<item>Barbell reverse-grip bent row</item>
-		<item>Barbell overhand bent row</item>
-		<item>Machine close-grip seated row</item>
-		<item>Machine wide-grip seated row</item>
-		<item>Cable seated row</item>
-		<item>Cable wide-grip seated row</item>
-		<item>Cable one-arm standing low row</item>
-		<item>Chin-up</item>
-		<item>Pull-up</item>
-		<item>Lat pull-down</item>
-		<item>Neutral-grip lat pull-down</item>
-		<item>Reverse-grip lat pull-down</item>
-		<item>Cable straight-arm lat pull-down</item>
-		<item>Cross cable lat pull-down</item>
-		<item>Dumbbell incline press</item>
-		<item>Dumbbell decline press</item>
-		<item>Dumbbell chest press</item>
-		<item>Barbell incline press</item>
-		<item>Barbell chest press</item>
-		<item>Barbell decline press</item>
-		<item>Machine incline press</item>
-		<item>Machine chest press</item>
-		<item>Dumbbell flat fly</item>
-		<item>Dumbbell incline fly</item>
-		<item>Pec deck fly</item>
-		<item>Cable fly</item>
-		<item>Chest dip</item>
-		<item>Crunch</item>
-		<item>Reverse crunch</item>
-		<item>Bicycle crunch</item>
-		<item>Roman chair side crunch</item>
-		<item>Stability ball abdominal crunch</item>
-		<item>Cable rope kneeling crunch</item>
-		<item>Cable rope kneeling twisting crunch</item>
-		<item>Toe touch</item>
-		<item>Plank</item>
-		<item>Side bridge</item>
-		<item>Hanging knee raise</item>
-		<item>Russion twist</item>
-		<item>Dumbbell side bend</item>
-		<item>Cable side bend</item>
-		<item>Cable wood chop</item>
-		<item>Barbell rollout</item>
-		<item>Arnold press</item>
-		<item>Military press</item>
-		<item>Dumbbell shoulder press</item>
-		<item>Machine shoulder press</item>
-		<item>Dumbbell lateral raise</item>
-		<item>Machine lateral raise</item>
-		<item>Cable lateral raise</item>
-		<item>Dumbbell bent reverse fly</item>
-		<item>Machine rear delt fly</item>
-		<item>Cable reverse fly</item>
-		<item>Cable kneeling reverse fly</item>
-		<item>Barbell upright row</item>
-		<item>Cable upright row</item>
-		<item>Dumbbell standing biceps curl</item>
-		<item>Dumbbell incline biceps curl</item>
-		<item>Dumbbell facedown incline curl</item>
-		<item>Dumbbell preacher curl</item>
-		<item>Barbell preacher curl</item>
-		<item>Machine preacher curl</item>
-		<item>Concentration curl</item>
-		<item>Dumbbell standing hammer curl</item>
-		<item>Barbell curl</item>
-		<item>Barbell drag curl</item>
-		<item>Cable rope hammer curl</item>
-		<item>Cable curl</item>
-		<item>Cable one-arm curl</item>
-		<item>Dumbbell overhead triceps extension</item>
-		<item>Cable rope overhead triceps extension</item>
-		<item>Nosebreaker</item>
-		<item>Machine nosebreaker</item>
-		<item>Dumbbell triceps kickback</item>
-		<item>Cable triceps kickback</item>
-		<item>Bench press</item>
-		<item>Cable triceps press-down</item>
-		<item>Triceps dip</item>
-		<item>Machine triceps dip</item>
-		<item>Walking lunge</item>
-		<item>Barbell lunge</item>
-		<item>Dumbbell lunge</item>
-		<item>Dumbbell reverse lunge</item>
-		<item>Dumbbell side lunge</item>
-		<item>Dumbbell step-up</item>
-		<item>Barbell front squat</item>
-		<item>Barbell back squat</item>
-		<item>Barbell split squat</item>
-		<item>Bulgarian squat</item>
-		<item>Leg press</item>
-		<item>Deadlift</item>
-		<item>Good morning</item>
-		<item>Sissy squat</item>
-		<item>Barbell stiff-legged deadlift</item>
-		<item>Dumbbell stiff-legged deadlift</item>
-		<item>Cable glute kickback</item>
-		<item>Hyperextension</item>
-		<item>Reverse hyperextension</item>
-		<item>Leg extension</item>
-		<item>One-leg extension</item>
-		<item>Lying leg curl</item>
-		<item>Machine kneeling leg curl</item>
-		<item>Machine seated leg curl</item>
-		<item>Toe press</item>
-		<item>Machine seated calf raise</item>
-		<item>Machine standing calf raise</item>
+        <item>Dumbbell pullover|Back</item>
+		<item>Dumbbell one-arm row|Back</item>
+		<item>T-bar row|Back</item>
+		<item>Barbell reverse-grip bent row|Back</item>
+		<item>Barbell overhand bent row|Back</item>
+		<item>Machine close-grip seated row|Back</item>
+		<item>Machine wide-grip seated row|Back</item>
+		<item>Cable seated row|Back</item>
+		<item>Cable wide-grip seated row|Back</item>
+		<item>Cable one-arm standing low row|Back</item>
+		<item>Chin-up|Back</item>
+		<item>Pull-up|Back</item>
+		<item>Lat pull-down|Back</item>
+		<item>Neutral-grip lat pull-down|Back</item>
+		<item>Reverse-grip lat pull-down|Back</item>
+		<item>Cable straight-arm lat pull-down|Back</item>
+		<item>Cross cable lat pull-down|Back</item>
+		<item>Dumbbell incline press|Chest</item>
+		<item>Dumbbell decline press|Chest</item>
+		<item>Dumbbell chest press|Chest</item>
+		<item>Barbell incline press|Chest</item>
+		<item>Barbell chest press|Chest</item>
+		<item>Barbell decline press|Chest</item>
+		<item>Machine incline press|Chest</item>
+		<item>Machine chest press|Chest</item>
+		<item>Dumbbell flat fly|Chest</item>
+		<item>Dumbbell incline fly|Chest</item>
+		<item>Pec deck fly|Chest</item>
+		<item>Cable fly|Chest</item>
+		<item>Chest dip|Chest</item>
+		<item>Crunch|Abdomen</item>
+		<item>Reverse crunch|chest</item>
+		<item>Bicycle crunch|Abdomen</item>
+		<item>Roman chair side crunch|Abdomen</item>
+		<item>Stability ball abdominal crunch|Abdomen</item>
+		<item>Cable rope kneeling crunch|Abdomen</item>
+		<item>Cable rope kneeling twisting crunch|Abdomen</item>
+		<item>Toe touch|Abdomen</item>
+		<item>Plank|Abdomen</item>
+		<item>Side bridge|Abdomen</item>
+		<item>Hanging knee raise|Abdomen</item>
+		<item>Russion twist|Abdomen</item>
+		<item>Dumbbell side bend|Abdomen</item>
+		<item>Cable side bend|Abdomen</item>
+		<item>Cable wood chop|Abdomen</item>
+		<item>Barbell rollout|Abdomen</item>
+		<item>Arnold press|Shoulders</item>
+		<item>Military press|Shoulders</item>
+		<item>Dumbbell shoulder press|Shoulders</item>
+		<item>Machine shoulder press|Shoulders</item>
+		<item>Dumbbell lateral raise|Shoulders</item>
+		<item>Machine lateral raise|Shoulders</item>
+		<item>Cable lateral raise|Shoulders</item>
+		<item>Dumbbell bent reverse fly|Shoulders</item>
+		<item>Machine rear delt fly|Shoulders</item>
+		<item>Cable reverse fly|Shoulders</item>
+		<item>Cable kneeling reverse fly|Shoulders</item>
+		<item>Barbell upright row|Shoulders</item>
+		<item>Cable upright row|Shoulders</item>
+		<item>Dumbbell standing biceps curl|chest</item>
+		<item>Dumbbell incline biceps curl|Biceps</item>
+		<item>Dumbbell facedown incline curl|Biceps</item>
+		<item>Dumbbell preacher curl|Biceps</item>
+		<item>Barbell preacher curl|Biceps</item>
+		<item>Machine preacher curl|Biceps</item>
+		<item>Concentration curl|Biceps</item>
+		<item>Dumbbell standing hammer curl|Biceps</item>
+		<item>Barbell curl|Biceps</item>
+		<item>Barbell drag curl|Biceps</item>
+		<item>Cable rope hammer curl|Biceps</item>
+		<item>Cable curl|Biceps</item>
+		<item>Cable one-arm curl|Biceps</item>
+		<item>Dumbbell overhead triceps extension|Triceps</item>
+		<item>Cable rope overhead triceps extension|Triceps</item>
+		<item>Nosebreaker|Triceps</item>
+		<item>Machine nosebreaker|Triceps</item>
+		<item>Dumbbell triceps kickback|Triceps</item>
+		<item>Cable triceps kickback|Triceps</item>
+		<item>Bench press|Triceps</item>
+		<item>Cable triceps press-down|Triceps</item>
+		<item>Triceps dip|Triceps</item>
+		<item>Machine triceps dip|Triceps</item>
+		<item>Walking lunge|Quads</item>
+		<item>Barbell lunge|Quads</item>
+		<item>Dumbbell lunge|Quads</item>
+		<item>Dumbbell reverse lunge|Quads</item>
+		<item>Dumbbell side lunge|Quads</item>
+		<item>Dumbbell step-up|Quads</item>
+		<item>Barbell front squat|Quads</item>
+		<item>Barbell back squat|Quads</item>
+		<item>Barbell split squat|Quads</item>
+		<item>Bulgarian squat|Quads</item>
+		<item>Leg press|Quads</item>
+		<item>Deadlift|Quads</item>
+		<item>Good morning|Hamstrings</item>
+		<item>Sissy squat|Hamstrings</item>
+		<item>Barbell stiff-legged deadlift|Hamstrings</item>
+		<item>Dumbbell stiff-legged deadlift|Hamstrings</item>
+		<item>Cable glute kickback|Hamstrings</item>
+		<item>Hyperextension|Hamstrings</item>
+		<item>Reverse hyperextension|Hamstrings</item>
+		<item>Leg extension|Hamstrings</item>
+		<item>One-leg extension|Hamstrings</item>
+		<item>Lying leg curl|Hamstrings</item>
+		<item>Machine kneeling leg curl|Hamstrings</item>
+		<item>Machine seated leg curl|Hamstrings</item>
+		<item>Toe press|Calves</item>
+		<item>Machine seated calf raise|Calves</item>
+		<item>Machine standing calf raise|Calves</item>
     </string-array>
 </resources>

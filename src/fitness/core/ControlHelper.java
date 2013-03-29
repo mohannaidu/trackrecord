@@ -3,20 +3,39 @@ package fitness.core;
 import sra.gg.R;
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.content.res.Configuration;
 import android.graphics.Color;
+import android.graphics.Point;
 import android.text.InputFilter;
+import android.text.InputType;
+import android.view.Display;
 import android.view.View;
 import android.view.View.OnFocusChangeListener;
+import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 public class ControlHelper {
+	
+	Double exercisePct;
+    Double weightPct;
+    Double setsPct;
+    Double repsPct;
+    Double targetPct;
+    Double tempoPct;
+    Double restPct;
+
 	
 	EditText et;
 	TextView vt;
 	InputFilter[] FilterArray;
 	AutoCompleteTextView actv;
+	
+	
+	
+	
 	
 	public EditText createEditText(Context ctx, String sValue, String sHint, int iWidth, boolean selectOnFocus, int sInputType, int maxLength){
 		et = new EditText(ctx);
