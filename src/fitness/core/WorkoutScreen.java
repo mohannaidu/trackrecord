@@ -11,6 +11,7 @@ import fitness.model.Workout;
 import sra.gg.R;
 
 import android.annotation.SuppressLint;
+import android.annotation.TargetApi;
 import android.app.Activity;
 import android.app.Dialog;
 import android.content.Intent;
@@ -19,6 +20,7 @@ import android.database.Cursor;
 import android.graphics.Color;
 import android.graphics.Point;
 import android.graphics.drawable.Drawable;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.text.InputType;
@@ -36,6 +38,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.RelativeLayout.LayoutParams;
 
+@TargetApi(Build.VERSION_CODES.ICE_CREAM_SANDWICH)
 public class WorkoutScreen extends Activity {
 	WorkoutAdapter helper;
 	TextView vt;
@@ -57,7 +60,9 @@ public class WorkoutScreen extends Activity {
 	RelativeLayout rlWorkoutRow;
 	LayoutParams lpWorkoutRow; 
 	
-	@SuppressLint("NewApi")
+
+	@SuppressWarnings("deprecation")
+	@TargetApi(Build.VERSION_CODES.HONEYCOMB_MR2)
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -117,7 +122,7 @@ public class WorkoutScreen extends Activity {
     	
     	Button add = new Button(this);
 		add.setText("New");
-		add.setBackground(res.getDrawable(R.drawable.red_button));
+		add.setBackgroundDrawable(res.getDrawable(R.drawable.red_button));
 		add.setWidth(80);
 		add.setOnClickListener(onAddNewRow);
 		add.setId(iViewCounter++);
@@ -127,7 +132,7 @@ public class WorkoutScreen extends Activity {
 		save = new Button(this);
 		save.setText("Save");
 		save.setId(iViewCounter++);
-		save.setBackground(res.getDrawable(R.drawable.red_button));
+		save.setBackgroundDrawable(res.getDrawable(R.drawable.red_button));
 		save.setWidth(80);
 		save.setOnClickListener(onSave);
 		

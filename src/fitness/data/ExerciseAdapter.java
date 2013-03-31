@@ -102,8 +102,8 @@ public class ExerciseAdapter {
         try{
         	
         	mCursor = this.mDb.query(DATABASE_TABLE, new String[] {
-        			KEY_NAME, KEY_WEIGHT, KEY_SETS, KEY_REPS, KEY_TARGET, KEY_TEMPO, KEY_REST, KEY_DATE_ENTERED }, KEY_DATE_ENTERED + " = '" + DateFormat.format("dd-MM-yy", dtDob).toString() + "'", 
-        			  null, null, null, null, null);
+        			KEY_NAME, KEY_WEIGHT, KEY_SETS, KEY_REPS, KEY_TARGET, KEY_TEMPO, KEY_REST, KEY_DATE_ENTERED, KEY_ORDERING_VALUE }, KEY_DATE_ENTERED + " = '" + DateFormat.format("dd-MM-yy", dtDob).toString() + "'", 
+        			  null, null, null, KEY_ORDERING_VALUE + " ASC", null);
         }catch(Exception e){
         	e.printStackTrace();        	
         }
@@ -151,10 +151,8 @@ public class ExerciseAdapter {
     public Cursor getExercise(String exercise) {
 
         Cursor mCursor = null;
-        // Wrap the next line in try-catch
+        
         try{
-        	//mCursor = this.mDb.rawQuery("SELECT name FROM " + DATABASE_TABLE +  " WHERE like '" + exercise + "%'", null);
-        	
         	
         	mCursor = this.mDb.query(DATABASE_TABLE, new String[] {
         			  KEY_NAME, KEY_DATE_ENTERED, KEY_WEIGHT }, KEY_NAME + " = '" + exercise + "'", 
@@ -183,7 +181,7 @@ public class ExerciseAdapter {
 		cv.put(KEY_WORKOUTID, exercise.getWorkoutID());
 		cv.put(KEY_ORDERING_VALUE, exercise.getOrderingValue());
 
-        return this.mDb.update(DATABASE_TABLE, cv, KEY_NAME + "='" + exercise.getExercise() + "'", null) >0; 
+        return this.mDb.update(DATABASE_TABLE, cv, KEY_NAME + "='" + exercise.getExercise() + "' AND " + KEY_DATE_ENTERED + " = '" + DateFormat.format("dd-MM-yy", dtDob).toString() + "'", null) >0; 
     }
 
 }

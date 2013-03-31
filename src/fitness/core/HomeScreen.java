@@ -18,7 +18,6 @@ import android.widget.RelativeLayout.LayoutParams;
 
 public class HomeScreen extends Activity {
 
-	@SuppressLint("NewApi")
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -36,7 +35,7 @@ public class HomeScreen extends Activity {
 		rl.setId(iViewCounter++);
 		
 		Drawable replacer = getResources().getDrawable(R.drawable.empty_white_box);
-		button.setBackground(replacer);
+		button.setBackgroundDrawable(replacer);
 		button.setId(iViewCounter++);
 		rl.addView(button);
 		
@@ -45,7 +44,7 @@ public class HomeScreen extends Activity {
 		button = new ImageButton(this);
 		button.setId(iViewCounter++);
 		replacer = getResources().getDrawable(R.drawable.workout);
-		button.setBackground(replacer);
+		button.setBackgroundDrawable(replacer);
 		button.setOnClickListener(new View.OnClickListener() {			
 			@Override
 			public void onClick(View v) {
@@ -61,7 +60,7 @@ public class HomeScreen extends Activity {
 		button = new ImageButton(this);
 		button.setId(iViewCounter++);
 		replacer = getResources().getDrawable(R.drawable.progress);
-		button.setBackground(replacer);
+		button.setBackgroundDrawable(replacer);
 		button.setOnClickListener(new View.OnClickListener() {			
 			@Override
 			public void onClick(View v) {
@@ -76,7 +75,7 @@ public class HomeScreen extends Activity {
 		button = new ImageButton(this);
 		button.setId(iViewCounter++);
 		replacer = getResources().getDrawable(R.drawable.prefs);
-		button.setBackground(replacer);
+		button.setBackgroundDrawable(replacer);
 		button.setOnClickListener(new View.OnClickListener() {			
 			@Override
 			public void onClick(View v) {

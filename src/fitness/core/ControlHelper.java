@@ -89,7 +89,6 @@ public class ControlHelper {
 	
 	private View.OnClickListener editTextFocusable = new View.OnClickListener() {
 		
-		@SuppressLint("NewApi")
 		@Override
 		public void onClick(View v) {
 			EditText et = (EditText)v;

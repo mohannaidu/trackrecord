@@ -12,6 +12,7 @@ import fitness.model.Exercise;
 import sra.gg.R;
 
 import android.annotation.SuppressLint;
+import android.annotation.TargetApi;
 import android.app.Activity;
 import android.app.DatePickerDialog;
 import android.app.Dialog;
@@ -21,6 +22,7 @@ import android.content.res.Resources;
 import android.database.Cursor;
 import android.graphics.Color;
 import android.graphics.Point;
+import android.os.Build;
 import android.os.Bundle;
 import android.text.InputType;
 import android.text.format.DateFormat;
@@ -42,6 +44,7 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 
+@TargetApi(Build.VERSION_CODES.HONEYCOMB_MR2)
 public class ExerciseScreen extends Activity {
 	private static final int MY_DATE_DIALOG_ID = 3;
 	private Exercise exercise = new Exercise();
@@ -71,10 +74,11 @@ public class ExerciseScreen extends Activity {
     Double targetPct;
     Double tempoPct;
     Double restPct;
+    Double orderingPct;
     int textMaxLength = 20;
     private static boolean bDateAvailable = false;
 	
-	@SuppressLint({ "NewApi", "ResourceAsColor" })
+	@SuppressLint({"ResourceAsColor" })
 	@SuppressWarnings("deprecation")
 	@Override
 		public void onCreate(Bundle savedInstanceState) {
@@ -157,7 +161,7 @@ public class ExerciseScreen extends Activity {
 	    	
 	    	Button add = new Button(this);
 			add.setText("New");
-			add.setBackground(res.getDrawable(R.drawable.red_button));
+			add.setBackgroundDrawable(res.getDrawable(R.drawable.red_button));
 			add.setWidth(80);
 			add.setOnClickListener(onAddNewRow);
 			add.setId(iViewCounter++);
@@ -169,7 +173,7 @@ public class ExerciseScreen extends Activity {
 			save = new Button(this);
 			save.setText("Save");
 			save.setId(iViewCounter++);
-			save.setBackground(res.getDrawable(R.drawable.red_button));
+			save.setBackgroundDrawable(res.getDrawable(R.drawable.red_button));
 			save.setWidth(80);
 			save.setOnClickListener(onSave);
 			
@@ -191,26 +195,7 @@ public class ExerciseScreen extends Activity {
 										
 			lp = new LayoutParams(LayoutParams.WRAP_CONTENT,LayoutParams.WRAP_CONTENT);
 			lp.addRule(RelativeLayout.BELOW, topLevelView.getId());	
-			
-			/** 
-			if (this.getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE){
-		        exercisePct = 0.4;
-		        weightPct = 0.1;
-		        setsPct = 0.1;
-		        repsPct = 0.1;
-		        targetPct = 0.1;
-		        tempoPct = 0.1;
-		        restPct = 0.1;
-	        }else if (this.getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT){
-		        exercisePct = 0.33;
-		        weightPct = 0.167;
-		        setsPct = 0.125;
-		        repsPct = 0.125;
-		        targetPct = 0.125;
-		        restPct = 0.125;
-	        }
-			----- */
-			
+						
 			// adding textview for field description
 			ll = new LinearLayout(this);
 	    	ll.setOrientation(LinearLayout.HORIZONTAL);
@@ -226,9 +211,9 @@ public class ExerciseScreen extends Activity {
 			try {
 				helper.open();
 			} catch (SQLException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
+			
 			try {
 				/** Get all exercises logged for the selected day */
 				exerciseCursor = helper.getAllExercise(exerciseDate);
@@ -240,12 +225,15 @@ public class ExerciseScreen extends Activity {
 				}
 			} catch (Exception e) {}
 				
+			int rowNo = 1;
 	        do {
 				
 		    	ll = new LinearLayout(this);
 		    	ll.setOrientation(LinearLayout.HORIZONTAL);
 		    	ll.setId(iViewCounter++);
-		    	ll = createEditViewRow(this, ll, getWindowManager().getDefaultDisplay(), exerciseCursor);
+		    	
+		    	ll = createEditViewRow(this, ll, getWindowManager().getDefaultDisplay(), exerciseCursor, rowNo);
+		    	rowNo++;
 		    				
 				/** need to check in debug */
 				if (exerciseCursor != null){
@@ -258,10 +246,8 @@ public class ExerciseScreen extends Activity {
 					
 					exerciseDate.set(Integer.parseInt(new String(date)), Integer.parseInt(new String(month))-1, Integer.parseInt("20" + new String(year)));
 					dtDob = exerciseDate.toMillis(true);    	
-			    	tvCalendar.setText(DateFormat.format("dd-MM-yy", dtDob));
-										
+			    	tvCalendar.setText(DateFormat.format("dd-MM-yy", dtDob));										
 				}
-					
 						
 				rl.addView(ll, lp);	
 				lp = new LayoutParams(LayoutParams.WRAP_CONTENT,LayoutParams.WRAP_CONTENT);
@@ -292,28 +278,17 @@ public class ExerciseScreen extends Activity {
 		    return str.substring(0,num);
 		}
 		
-		@SuppressLint("NewApi")
-		private LinearLayout createEditViewRow(Context ctx, LinearLayout ll, Display display, Cursor exerciseCursor){
+		
+		private LinearLayout createEditViewRow(Context ctx, LinearLayout ll, Display display, Cursor exerciseCursor, int rowNo){
 			EditText et;
 		 	size = new Point();
 	        display.getSize(size);
 	        screenWidth = size.x;
 	    	
 	        if (ctx.getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE){
-		        exercisePct = 0.4;
-		        weightPct = 0.1;
-		        setsPct = 0.1;
-		        repsPct = 0.1;
-		        targetPct = 0.1;
-		        tempoPct = 0.1;
-		        restPct = 0.1;
+		        exercisePct = 0.4;weightPct = 0.1;setsPct = 0.1;repsPct = 0.1;targetPct = 0.1;tempoPct = 0.1;restPct = 0.1;orderingPct=0.1;
 	        }else if (ctx.getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT){
-		        exercisePct = 0.33;
-		        weightPct = 0.167;
-		        setsPct = 0.125;
-		        repsPct = 0.125;
-		        targetPct = 0.125;
-		        restPct = 0.125;
+		        exercisePct = 0.4;weightPct = 0.167;setsPct = 0.108;repsPct = 0.108;restPct = 0.108;orderingPct=0.108;
 	        }
 			
 			AutoCompleteTextView actv = controlHelper.createAutoCompleteText(ExerciseScreen.this,  (exerciseCursor == null) ?  "" : exerciseCursor.getString(0), "Enter exercise",  (int) (exercisePct * screenWidth), true, InputType.TYPE_CLASS_TEXT|InputType.TYPE_TEXT_FLAG_CAP_WORDS, 80);
@@ -325,29 +300,26 @@ public class ExerciseScreen extends Activity {
 	    	ArrayAdapter<String> adapter =  new ArrayAdapter<String>(ExerciseScreen.this, android.R.layout.simple_dropdown_item_1line, arr);
 	    	actv.setAdapter(adapter);
 	    	actv.setTag(getIntent().getStringExtra("workoutRowID"));
-	    	editTextList.add(actv);
-			ll.addView(actv);
+	    	editTextList.add(actv);ll.addView(actv);
 			
 			et = controlHelper.createEditText(this,  (exerciseCursor == null) ?  "" : exerciseCursor.getString(1),"10.0", (int) (weightPct * screenWidth), true, InputType.TYPE_CLASS_NUMBER|InputType.TYPE_NUMBER_FLAG_DECIMAL, 5);
-			editTextList.add(et);
-			ll.addView(et);
+			editTextList.add(et);ll.addView(et);
 							
 			et = controlHelper.createEditText(this, (exerciseCursor == null) ?  "" : exerciseCursor.getString(2), "4", (int) (setsPct * screenWidth), true, InputType.TYPE_CLASS_NUMBER, 2);
-			editTextList.add(et);
-			ll.addView(et);
+			editTextList.add(et);ll.addView(et);
 			
 			et = controlHelper.createEditText(this, (exerciseCursor == null) ?  "" : exerciseCursor.getString(3), "8", (int) (repsPct * screenWidth), true, InputType.TYPE_CLASS_NUMBER, 3);
-			editTextList.add(et);
-			ll.addView(et);
-			
-			et = controlHelper.createEditText(this, (exerciseCursor == null) ?  "" : exerciseCursor.getString(4), "8", (int) (targetPct * screenWidth), true, InputType.TYPE_CLASS_NUMBER, 3);
-			editTextList.add(et);
-			ll.addView(et);
-			
+			editTextList.add(et);ll.addView(et);
+						
 			if (this.getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE){
+				et = controlHelper.createEditText(this, (exerciseCursor == null) ?  "" : exerciseCursor.getString(4), "8", (int) (targetPct * screenWidth), true, InputType.TYPE_CLASS_NUMBER, 3);
+				editTextList.add(et);
+				ll.addView(et);			
 				et = controlHelper.createEditText(this, (exerciseCursor == null) ?  "" : exerciseCursor.getString(5), "0202", (int) (tempoPct* screenWidth), true, InputType.TYPE_CLASS_NUMBER, 4);
 				ll.addView(et);
 			}else if (this.getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT){
+				et = controlHelper.createEditText(this, (exerciseCursor == null) ?  "" : exerciseCursor.getString(4), "8", 60, true, InputType.TYPE_CLASS_NUMBER, 3);
+				editTextList.add(et);
 				et = controlHelper.createEditText(this,  (exerciseCursor != null) ? exerciseCursor.getString(5) : "0202", "0202", 60, true, InputType.TYPE_CLASS_NUMBER, 4);
 			}
 			editTextList.add(et);
@@ -356,10 +328,17 @@ public class ExerciseScreen extends Activity {
 			editTextList.add(et);
 			ll.addView(et);
 			
+			Button ordering = new Button(this);
+			ordering.setText("Up");
+			ordering.setWidth((int) (orderingPct* screenWidth));
+			ordering.setTag(rowNo);
+			ordering.setOnClickListener(onMoveRowUp);
+			ordering.setId(iViewCounter++);			
+			ll.addView(ordering);
+			
 			return ll;			
 		}
 		
-		@SuppressLint("NewApi")
 		private LinearLayout createTextViewRow(Context ctx, LinearLayout ll, Display display){
 			
 	        size = new Point();
@@ -367,128 +346,93 @@ public class ExerciseScreen extends Activity {
 	        screenWidth = size.x;
 	    	
 	        if (ctx.getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE){
-		        exercisePct = 0.4;
-		        weightPct = 0.1;
-		        setsPct = 0.1;
-		        repsPct = 0.1;
-		        targetPct = 0.1;
-		        tempoPct = 0.1;
-		        restPct = 0.1;
+		        exercisePct = 0.4;weightPct = 0.1;setsPct = 0.1;repsPct = 0.1;targetPct = 0.1;tempoPct = 0.1;restPct = 0.1;orderingPct=0.1;
 	        }else if (ctx.getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT){
-		        exercisePct = 0.33;
-		        weightPct = 0.167;
-		        setsPct = 0.125;
-		        repsPct = 0.125;
-		        targetPct = 0.125;
-		        restPct = 0.125;
+	        	exercisePct = 0.4;weightPct = 0.167;setsPct = 0.108;repsPct = 0.108;restPct = 0.108;orderingPct=0.108;
 	        }
 	    			    	
 			ll.addView(controlHelper.createTextView(ctx," Exercise", (int) (exercisePct * screenWidth), textMaxLength));	
 			ll.addView(controlHelper.createTextView(ctx," Weight(kg)", (int) (weightPct * screenWidth), textMaxLength));
 			ll.addView(controlHelper.createTextView(ctx," Sets", (int) (setsPct * screenWidth), textMaxLength));
 			ll.addView(controlHelper.createTextView(ctx," Reps", (int) (repsPct * screenWidth), textMaxLength));
-			ll.addView(controlHelper.createTextView(ctx," Target", (int) (targetPct * screenWidth), textMaxLength));
 			if (ctx.getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE){
+				ll.addView(controlHelper.createTextView(ctx," Target", (int) (targetPct * screenWidth), textMaxLength));			
 				ll.addView(controlHelper.createTextView(ctx," Tempo", (int) (tempoPct* screenWidth), textMaxLength));
 			}
 			ll.addView(controlHelper.createTextView(ctx," Rest(s)", (int) (restPct * screenWidth), textMaxLength));
+			ll.addView(controlHelper.createTextView(ctx," Order", (int) (restPct * screenWidth), textMaxLength));
 			
 			return ll;
 		}
 		
 	
-		private View.OnClickListener onAddNewRow = new View.OnClickListener() {
-			
-			@SuppressLint("NewApi")
+		private View.OnClickListener onAddNewRow = new View.OnClickListener() {			
+
 			@Override
 			public void onClick(View v) {
 				LinearLayout llAddNewRow = new LinearLayout(ExerciseScreen.this);
 		    	llAddNewRow.setOrientation(LinearLayout.HORIZONTAL);
 		    	llAddNewRow.setId(iViewCounter++);
-		    									
-				EditText et;
-				AutoCompleteTextView actv;
 				
 				display = getWindowManager().getDefaultDisplay();
-		        size = new Point();
-		        display.getSize(size);
-		        screenWidth = size.x;
-				
-				if (ExerciseScreen.this.getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE){					 
-					exercisePct = 0.4;					 
-			        weightPct = 0.1;
-			        setsPct = 0.1;
-			        repsPct = 0.1;
-			        targetPct = 0.1;
-			        tempoPct = 0.1;
-			        restPct = 0.1;
-			    }else if(ExerciseScreen.this.getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT){
-					exercisePct = 0.33;
-			        weightPct = 0.167;
-			        setsPct = 0.125;
-			        repsPct = 0.125;
-			        targetPct = 0.125;
-			        restPct = 0.125;
-				}
-				        
-				actv = controlHelper.createAutoCompleteText(ExerciseScreen.this, "",  "Enter exercise", (int) (exercisePct * screenWidth), true, InputType.TYPE_CLASS_TEXT|InputType.TYPE_TEXT_FLAG_CAP_WORDS, 80);
-				String[] array = getResources().getStringArray(R.array.muscle_array);
-		    	String arr[] = new String[array.length];
-		    	for(int i=0 ; i<array.length ; i++)
-		    		arr[i] = retrieveMuscle(array[i]);
-		    	
-		    	ArrayAdapter<String> adapter = 
-		    	        new ArrayAdapter<String>(ExerciseScreen.this, android.R.layout.simple_dropdown_item_1line, arr);
-		    	actv.setAdapter(adapter);
-		    	actv.setTag(getIntent().getStringExtra("workoutRowID"));	
-				editTextList.add(actv);	
-				llAddNewRow.addView(actv);
-				
-				et = controlHelper.createEditText(ExerciseScreen.this, "", "10.0",  (int) (weightPct * screenWidth), true, InputType.TYPE_CLASS_NUMBER|InputType.TYPE_NUMBER_FLAG_DECIMAL, 5);
-				editTextList.add(et);
-				llAddNewRow.addView(et);
-								
-				et = controlHelper.createEditText(ExerciseScreen.this, "", "4", (int) (setsPct * screenWidth), true, InputType.TYPE_CLASS_NUMBER, 2);
-				editTextList.add(et);
-				llAddNewRow.addView(et);
-				
-				et = controlHelper.createEditText(ExerciseScreen.this, "", "8", (int) (repsPct * screenWidth), true, InputType.TYPE_CLASS_NUMBER, 3);
-				editTextList.add(et);
-				llAddNewRow.addView(et);
-				
-				et = controlHelper.createEditText(ExerciseScreen.this, "", "8", (int) (targetPct * screenWidth), true, InputType.TYPE_CLASS_NUMBER, 3);
-				editTextList.add(et);
-				llAddNewRow.addView(et);
-				
-				if (ExerciseScreen.this.getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE){
-					et = controlHelper.createEditText(ExerciseScreen.this, "", "0202",(int) (tempoPct * screenWidth), true, InputType.TYPE_CLASS_NUMBER, 4);
-					llAddNewRow.addView(et);
-				}else if(ExerciseScreen.this.getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT){
-					// assuming default tempo of 0202
-					et = controlHelper.createEditText(ExerciseScreen.this, "0202", "0202", 60, true, InputType.TYPE_CLASS_NUMBER, 4);
-				}
-				editTextList.add(et);
-								
-				et = controlHelper.createEditText(ExerciseScreen.this, "", "30", (int) (restPct * screenWidth), true, InputType.TYPE_CLASS_NUMBER, 3);
-				editTextList.add(et);
-				llAddNewRow.addView(et);							
-								
-				// need to check if this is the first row to be added or not; cos it will throw exception
-				View lastLinearLayout = rl.getChildAt(rl.getChildCount()-1);
-				
+				LinearLayout lastLinearLayout = (LinearLayout) rl.getChildAt(rl.getChildCount()-1);
+				Button button = (Button)lastLinearLayout.getChildAt(rl.getChildCount()-1);
+
+			    String str = button.getTag().toString();			   
+			    int rowNo = Integer.parseInt(str);
+				llAddNewRow = createEditViewRow(ExerciseScreen.this, llAddNewRow, getWindowManager().getDefaultDisplay(), null, rowNo);								
 				
 				lp = new LayoutParams(LayoutParams.WRAP_CONTENT,LayoutParams.WRAP_CONTENT);
 				lp.addRule(RelativeLayout.BELOW, lastLinearLayout.getId());
-				rl.addView(llAddNewRow, lp);	
-				
-				/*//retrieve save button from relativelayout and get re-add below the layout				
-				lpSave = new LayoutParams(LayoutParams.WRAP_CONTENT,LayoutParams.WRAP_CONTENT);
-				lpSave.addRule(RelativeLayout.BELOW, llAddNewRow.getId());
-				rl.addView(button, lpSave);*/
-				
+				rl.addView(llAddNewRow, lp);				
 			}
 		};
 		
+		private View.OnClickListener onMoveRowUp = new View.OnClickListener() {			
+
+			@Override
+			public void onClick(View v) {
+				/** get row number to be moved */
+				int rowMove = Integer.parseInt(v.getTag().toString()); 
+				
+				/** get total number of rows */
+				LinearLayout lastLinearLayout = (LinearLayout) rl.getChildAt(rl.getChildCount()-1);
+				Button button = (Button)lastLinearLayout.getChildAt(lastLinearLayout.getChildCount()-1);				
+				int rowNo = Integer.parseInt(button.getTag().toString());			   
+				
+				LinearLayout[] linearLayout = new LinearLayout[rowNo];
+				int rowNoRelativeLayout = rl.getChildCount();
+				int rowNoEditText = rowNoRelativeLayout - rowNo;
+			    for (int i=0; i<rowNo; i++){
+			    	/** if current row is above the row to be moved up */
+			    	if (i == (rowMove-1)){
+			    		linearLayout[i] = (LinearLayout)rl.getChildAt(rowNoEditText+1);			    	
+			    	}else /** if current row is the row to be moved up */
+			    		if(i == rowMove){			    	
+			    		linearLayout[i] = (LinearLayout)rl.getChildAt(rowNoEditText-1);
+			    	}else{
+			    		/** all other rows */
+			    		linearLayout[i] = (LinearLayout)rl.getChildAt(rowNoEditText);
+			    	}
+			    	rowNoEditText++;
+			    }
+			    /** remove all editrowtext */
+			    rl.removeViews(rowNoRelativeLayout-rowNo, rowNo);
+			    
+			    /** get textview id and set layout params */
+			    lastLinearLayout = (LinearLayout) rl.getChildAt(rl.getChildCount()-1);
+			    lp = new LayoutParams(LayoutParams.WRAP_CONTENT,LayoutParams.WRAP_CONTENT);
+				lp.addRule(RelativeLayout.BELOW, lastLinearLayout.getId());
+				
+			    for (int i=0; i<rowNo; i++){
+			    	rl.addView(linearLayout[i], lp);
+			    	lp = new LayoutParams(LayoutParams.WRAP_CONTENT,LayoutParams.WRAP_CONTENT);
+					lp.addRule(RelativeLayout.BELOW, linearLayout[i].getId());
+			    }
+				
+				//rl.addView(llAddNewRow, lp);				
+			}
+		};
 		
 	
 		private View.OnClickListener onSave = new View.OnClickListener() {
@@ -500,11 +444,15 @@ public class ExerciseScreen extends Activity {
 				String valList[] = new String[editTextList.size()+10];
 				int i = 0;
 				boolean bSaved = true;
+				int orderingValue = 1;
+				int num;
+				String str;
 				
 				for (EditText editText : editTextList) {
 					Log.d("MyApp",editText.getText().toString());
-					if(i % 8 == 0)
+					if(i % 8 == 0){
 						valList[i++] = editText.getTag().toString();
+					}
 					valList[i++] = editText.getText().toString();
 	            }
 				
@@ -542,12 +490,11 @@ public class ExerciseScreen extends Activity {
 				    	exercise.setDateEntered(exerciseDate);
 						
 						//later need to be included in the screen
-						exercise.setOrderingValue("0");						
+						exercise.setOrderingValue(String.valueOf(orderingValue++));						
 						if (helper.createEntry(exercise) == -1)
 							bSaved = false;						
 						exercise = new Exercise();
-						break;
-						
+						break;						
 					}
 					
 					if (!bSaved)
