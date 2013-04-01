@@ -49,7 +49,7 @@ public class ExerciseScreen extends Activity {
 	private static final int MY_DATE_DIALOG_ID = 3;
 	private Exercise exercise = new Exercise();
 	private static Time exerciseDate = new Time();
-	private List<EditText> editTextList = new ArrayList<EditText>();
+	private List<TextView> editTextList = new ArrayList<TextView>();
 	ExerciseAdapter helper;
 	TextView tvCalendar;
 	ControlHelper controlHelper; 
@@ -318,7 +318,7 @@ public class ExerciseScreen extends Activity {
 				et = controlHelper.createEditText(this, (exerciseCursor == null) ?  "" : exerciseCursor.getString(5), "0202", (int) (tempoPct* screenWidth), true, InputType.TYPE_CLASS_NUMBER, 4);
 				ll.addView(et);
 			}else if (this.getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT){
-				et = controlHelper.createEditText(this, (exerciseCursor == null) ?  "" : exerciseCursor.getString(4), "8", 60, true, InputType.TYPE_CLASS_NUMBER, 3);
+				et = controlHelper.createEditText(this, (exerciseCursor != null) ? exerciseCursor.getString(4) : "8", "8", 60, true, InputType.TYPE_CLASS_NUMBER, 3);
 				editTextList.add(et);
 				et = controlHelper.createEditText(this,  (exerciseCursor != null) ? exerciseCursor.getString(5) : "0202", "0202", 60, true, InputType.TYPE_CLASS_NUMBER, 4);
 			}
@@ -333,7 +333,8 @@ public class ExerciseScreen extends Activity {
 			ordering.setWidth((int) (orderingPct* screenWidth));
 			ordering.setTag(rowNo);
 			ordering.setOnClickListener(onMoveRowUp);
-			ordering.setId(iViewCounter++);			
+			ordering.setId(iViewCounter++);		
+			editTextList.add(ordering);
 			ll.addView(ordering);
 			
 			return ll;			
@@ -376,11 +377,21 @@ public class ExerciseScreen extends Activity {
 				
 				display = getWindowManager().getDefaultDisplay();
 				LinearLayout lastLinearLayout = (LinearLayout) rl.getChildAt(rl.getChildCount()-1);
-				Button button = (Button)lastLinearLayout.getChildAt(rl.getChildCount()-1);
-
+				/*
+				
+				Button button = (Button)lastLinearLayout.getChildAt(lastLinearLayout.getChildCount()-1);
 			    String str = button.getTag().toString();			   
 			    int rowNo = Integer.parseInt(str);
-				llAddNewRow = createEditViewRow(ExerciseScreen.this, llAddNewRow, getWindowManager().getDefaultDisplay(), null, rowNo);								
+			    */
+				int i = 0;
+				int rowNo = 0;
+				for (TextView editText : editTextList) {
+					if(i % 8 == 7){
+						rowNo = Integer.parseInt(editText.getTag().toString());
+					}
+					i++;
+				}
+				llAddNewRow = createEditViewRow(ExerciseScreen.this, llAddNewRow, display, null, rowNo+1);								
 				
 				lp = new LayoutParams(LayoutParams.WRAP_CONTENT,LayoutParams.WRAP_CONTENT);
 				lp.addRule(RelativeLayout.BELOW, lastLinearLayout.getId());
@@ -392,27 +403,37 @@ public class ExerciseScreen extends Activity {
 
 			@Override
 			public void onClick(View v) {
+				Button button;
 				/** get row number to be moved */
 				int rowMove = Integer.parseInt(v.getTag().toString()); 
 				
 				/** get total number of rows */
 				LinearLayout lastLinearLayout = (LinearLayout) rl.getChildAt(rl.getChildCount()-1);
-				Button button = (Button)lastLinearLayout.getChildAt(lastLinearLayout.getChildCount()-1);				
+				button = (Button)lastLinearLayout.getChildAt(lastLinearLayout.getChildCount()-1);				
 				int rowNo = Integer.parseInt(button.getTag().toString());			   
 				
 				LinearLayout[] linearLayout = new LinearLayout[rowNo];
 				int rowNoRelativeLayout = rl.getChildCount();
 				int rowNoEditText = rowNoRelativeLayout - rowNo;
-			    for (int i=0; i<rowNo; i++){
+			    for (int i=1; i<=rowNo; i++){
 			    	/** if current row is above the row to be moved up */
 			    	if (i == (rowMove-1)){
-			    		linearLayout[i] = (LinearLayout)rl.getChildAt(rowNoEditText+1);			    	
+			    		linearLayout[i-1] = (LinearLayout)rl.getChildAt(rowNoEditText+1);
+			    		/** get the button and update the tag */
+			    		button = (Button)linearLayout[i-1].getChildAt(linearLayout[i-1].getChildCount()-1);
+			    		button.setTag(i);
 			    	}else /** if current row is the row to be moved up */
 			    		if(i == rowMove){			    	
-			    		linearLayout[i] = (LinearLayout)rl.getChildAt(rowNoEditText-1);
+			    		linearLayout[i-1] = (LinearLayout)rl.getChildAt(rowNoEditText-1);
+			    		/** get the button and update the tag */
+			    		button = (Button)linearLayout[i-1].getChildAt(linearLayout[i-1].getChildCount()-1);
+			    		button.setTag(i);
 			    	}else{
 			    		/** all other rows */
-			    		linearLayout[i] = (LinearLayout)rl.getChildAt(rowNoEditText);
+			    		linearLayout[i-1] = (LinearLayout)rl.getChildAt(rowNoEditText);
+			    		/** get the button and update the tag */
+			    		button = (Button)linearLayout[i-1].getChildAt(linearLayout[i-1].getChildCount()-1);
+			    		button.setTag(i);
 			    	}
 			    	rowNoEditText++;
 			    }
@@ -444,16 +465,17 @@ public class ExerciseScreen extends Activity {
 				String valList[] = new String[editTextList.size()+10];
 				int i = 0;
 				boolean bSaved = true;
-				int orderingValue = 1;
-				int num;
-				String str;
 				
-				for (EditText editText : editTextList) {
+				for (TextView editText : editTextList) {
 					Log.d("MyApp",editText.getText().toString());
-					if(i % 8 == 0){
+					if(i % 9 == 0){
 						valList[i++] = editText.getTag().toString();
 					}
-					valList[i++] = editText.getText().toString();
+					if(i % 9 == 8){
+						valList[i++] = editText.getTag().toString();
+					}else{
+						valList[i++] = editText.getText().toString();
+					}
 	            }
 				
 				// save function
@@ -461,7 +483,7 @@ public class ExerciseScreen extends Activity {
 				for (int k=0 ; k<i ; k++){	
 					
 				//exercise.setExercise(e.getText().toString());		
-					switch(k % 8){
+					switch(k % 9){
 					case 0:
 						exercise.setWorkoutID(valList[k]);
 						break;
@@ -485,12 +507,15 @@ public class ExerciseScreen extends Activity {
 						break;
 					case 7:
 						exercise.setRest(valList[k]);
+						break;
+					case 8:
+						exercise.setOrderingValue(valList[k]);
 						
 						/** setting date for exercise */ 	
 				    	exercise.setDateEntered(exerciseDate);
 						
 						//later need to be included in the screen
-						exercise.setOrderingValue(String.valueOf(orderingValue++));						
+						;						
 						if (helper.createEntry(exercise) == -1)
 							bSaved = false;						
 						exercise = new Exercise();
@@ -557,7 +582,7 @@ public class ExerciseScreen extends Activity {
 		}
 		
 		private void releaseFocus(){
-			for (EditText editText : editTextList) {
+			for (TextView editText : editTextList) {
 				editText.setFocusable(false);				
 				editText.setFocusableInTouchMode(false);
             }
