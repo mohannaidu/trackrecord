@@ -91,8 +91,9 @@ public class ExerciseAdapter {
         }
     }
     
-    public boolean deleteExercise(long rowId) {
-        return this.mDb.delete(DATABASE_TABLE, KEY_ROWID + "=" + rowId, null) > 0; 
+    public boolean deleteExercise(String exerciseName, Time dateCreated) {
+    	long dtDob = dateCreated.toMillis(true); 
+        return this.mDb.delete(DATABASE_TABLE, KEY_NAME + " = '" + exerciseName + "' AND " + KEY_DATE_ENTERED + " = '" + DateFormat.format("dd-MM-yy", dtDob).toString() + "'", null) > 0; 
     }
    
     public Cursor getAllExercise(Time dateCreated) {

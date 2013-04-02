@@ -75,6 +75,7 @@ public class ExerciseScreen extends Activity {
     Double tempoPct;
     Double restPct;
     Double orderingPct;
+    Double deletePct;
     int textMaxLength = 20;
     private static boolean bDateAvailable = false;
 	
@@ -286,7 +287,7 @@ public class ExerciseScreen extends Activity {
 	        screenWidth = size.x;
 	    	
 	        if (ctx.getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE){
-		        exercisePct = 0.4;weightPct = 0.1;setsPct = 0.1;repsPct = 0.1;targetPct = 0.1;tempoPct = 0.1;restPct = 0.1;orderingPct=0.1;
+		        exercisePct = 0.4;weightPct = 0.075;setsPct = 0.075;repsPct = 0.075;targetPct = 0.075;tempoPct = 0.075;restPct = 0.075;orderingPct=0.075;deletePct=0.075;
 	        }else if (ctx.getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT){
 		        exercisePct = 0.4;weightPct = 0.167;setsPct = 0.108;repsPct = 0.108;restPct = 0.108;orderingPct=0.108;
 	        }
@@ -328,6 +329,19 @@ public class ExerciseScreen extends Activity {
 			editTextList.add(et);
 			ll.addView(et);
 			
+			Button deleteRow = new Button(this);
+			deleteRow.setText("Del");			
+			deleteRow.setTag(rowNo);
+			deleteRow.setOnClickListener(onDeleteRow);
+			deleteRow.setId(iViewCounter++);		
+			editTextList.add(deleteRow);
+			/** delete button is visible only in landscape mode */
+			if (this.getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE){
+				deleteRow.setWidth((int) (deletePct* screenWidth));
+				ll.addView(deleteRow);
+			}
+				
+			
 			Button ordering = new Button(this);
 			ordering.setText("Up");
 			ordering.setWidth((int) (orderingPct* screenWidth));
@@ -347,7 +361,7 @@ public class ExerciseScreen extends Activity {
 	        screenWidth = size.x;
 	    	
 	        if (ctx.getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE){
-		        exercisePct = 0.4;weightPct = 0.1;setsPct = 0.1;repsPct = 0.1;targetPct = 0.1;tempoPct = 0.1;restPct = 0.1;orderingPct=0.1;
+	        	exercisePct = 0.4;weightPct = 0.075;setsPct = 0.075;repsPct = 0.075;targetPct = 0.075;tempoPct = 0.075;restPct = 0.075;orderingPct=0.075;deletePct=0.075;
 	        }else if (ctx.getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT){
 	        	exercisePct = 0.4;weightPct = 0.167;setsPct = 0.108;repsPct = 0.108;restPct = 0.108;orderingPct=0.108;
 	        }
@@ -361,7 +375,10 @@ public class ExerciseScreen extends Activity {
 				ll.addView(controlHelper.createTextView(ctx," Tempo", (int) (tempoPct* screenWidth), textMaxLength));
 			}
 			ll.addView(controlHelper.createTextView(ctx," Rest(s)", (int) (restPct * screenWidth), textMaxLength));
+			if (ctx.getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE)
+				ll.addView(controlHelper.createTextView(ctx," Del", (int) (deletePct * screenWidth), textMaxLength));	
 			ll.addView(controlHelper.createTextView(ctx," Order", (int) (restPct * screenWidth), textMaxLength));
+			
 			
 			return ll;
 		}
@@ -377,16 +394,11 @@ public class ExerciseScreen extends Activity {
 				
 				display = getWindowManager().getDefaultDisplay();
 				LinearLayout lastLinearLayout = (LinearLayout) rl.getChildAt(rl.getChildCount()-1);
-				/*
 				
-				Button button = (Button)lastLinearLayout.getChildAt(lastLinearLayout.getChildCount()-1);
-			    String str = button.getTag().toString();			   
-			    int rowNo = Integer.parseInt(str);
-			    */
 				int i = 0;
 				int rowNo = 0;
 				for (TextView editText : editTextList) {
-					if(i % 8 == 7){
+					if(i % 9 == 8){
 						rowNo = Integer.parseInt(editText.getTag().toString());
 					}
 					i++;
@@ -396,6 +408,70 @@ public class ExerciseScreen extends Activity {
 				lp = new LayoutParams(LayoutParams.WRAP_CONTENT,LayoutParams.WRAP_CONTENT);
 				lp.addRule(RelativeLayout.BELOW, lastLinearLayout.getId());
 				rl.addView(llAddNewRow, lp);				
+			}
+		};
+		
+		private View.OnClickListener onDeleteRow = new View.OnClickListener() {			
+
+			@Override
+			public void onClick(View v) {
+				Button button;
+				/** get row number to be moved */
+				int rowMove = Integer.parseInt(v.getTag().toString()); 
+				
+				/** get total number of rows */
+				LinearLayout lastLinearLayout = (LinearLayout) rl.getChildAt(rl.getChildCount()-1);
+				button = (Button)lastLinearLayout.getChildAt(lastLinearLayout.getChildCount()-1);				
+				int rowNo = Integer.parseInt(button.getTag().toString());			   
+				
+				LinearLayout[] linearLayout = new LinearLayout[rowNo];
+				int rowNoRelativeLayout = rl.getChildCount();
+				int rowNoEditText = rowNoRelativeLayout - rowNo;
+				/** resetting button numbering */
+				int iDeleteRowRemovedFromView = 0;
+				int iNewNo = 1;
+			    for (int i=1; i<=rowNo; i++){
+			    	 /** if current row is the row to be moved up */
+			    	if(i == rowMove){	
+			    		rl.removeViewAt(rowNoEditText-1);	
+			    		iDeleteRowRemovedFromView = 1;
+			    		/** remove from edittextlist */
+			    		Log.d("MyApp",String.valueOf(editTextList.size()));
+			    		String exerciseName = "";
+			    		for (int k=1;k< 10; k++) {
+			    			if (k==1)
+			    				exerciseName = editTextList.get((i-1)*9).getText().toString();
+			    			editTextList.remove((i-1)*9);							
+						}
+			    		/** remove from database */
+			    		/** need to write it */
+			    		helper.deleteExercise(exerciseName, exerciseDate);
+			    	}else{
+			    		/** all other rows */
+			    		linearLayout[iNewNo-1] = (LinearLayout)rl.getChildAt(rowNoEditText - iDeleteRowRemovedFromView);
+			    		/** get the update button and update the tag */
+			    		button = (Button)linearLayout[iNewNo-1].getChildAt(linearLayout[iNewNo-1].getChildCount()-1);
+			    		button.setTag(iNewNo);
+			    		
+			    		/** get the delete button and update the tag */
+			    		button = (Button)linearLayout[iNewNo-1].getChildAt(linearLayout[iNewNo-1].getChildCount()-2);
+			    		button.setTag(iNewNo++);
+			    	}
+			    	rowNoEditText++;
+			    }
+			    /** remove all editrowtext */
+			    rl.removeViews(rowNoRelativeLayout-rowNo, rowNo - iDeleteRowRemovedFromView);
+			    
+			    /** get textview id and set layout params */
+			    lastLinearLayout = (LinearLayout) rl.getChildAt(rl.getChildCount()-1);
+			    lp = new LayoutParams(LayoutParams.WRAP_CONTENT,LayoutParams.WRAP_CONTENT);
+				lp.addRule(RelativeLayout.BELOW, lastLinearLayout.getId());
+				
+			    for (int i=0; i<(rowNo - iDeleteRowRemovedFromView); i++){
+			    	rl.addView(linearLayout[i], lp);
+			    	lp = new LayoutParams(LayoutParams.WRAP_CONTENT,LayoutParams.WRAP_CONTENT);
+					lp.addRule(RelativeLayout.BELOW, linearLayout[i].getId());
+			    }
 			}
 		};
 		
@@ -450,8 +526,6 @@ public class ExerciseScreen extends Activity {
 			    	lp = new LayoutParams(LayoutParams.WRAP_CONTENT,LayoutParams.WRAP_CONTENT);
 					lp.addRule(RelativeLayout.BELOW, linearLayout[i].getId());
 			    }
-				
-				//rl.addView(llAddNewRow, lp);				
 			}
 		};
 		
@@ -468,10 +542,10 @@ public class ExerciseScreen extends Activity {
 				
 				for (TextView editText : editTextList) {
 					Log.d("MyApp",editText.getText().toString());
-					if(i % 9 == 0){
+					if(i % 10 == 0){
 						valList[i++] = editText.getTag().toString();
 					}
-					if(i % 9 == 8){
+					if(i % 10 == 9){
 						valList[i++] = editText.getTag().toString();
 					}else{
 						valList[i++] = editText.getText().toString();
@@ -483,7 +557,7 @@ public class ExerciseScreen extends Activity {
 				for (int k=0 ; k<i ; k++){	
 					
 				//exercise.setExercise(e.getText().toString());		
-					switch(k % 9){
+					switch(k % 10){
 					case 0:
 						exercise.setWorkoutID(valList[k]);
 						break;
@@ -508,14 +582,14 @@ public class ExerciseScreen extends Activity {
 					case 7:
 						exercise.setRest(valList[k]);
 						break;
-					case 8:
+					case 8: /* for delete button */
+						break;
+					case 9:
 						exercise.setOrderingValue(valList[k]);
 						
 						/** setting date for exercise */ 	
 				    	exercise.setDateEntered(exerciseDate);
-						
-						//later need to be included in the screen
-						;						
+																		
 						if (helper.createEntry(exercise) == -1)
 							bSaved = false;						
 						exercise = new Exercise();

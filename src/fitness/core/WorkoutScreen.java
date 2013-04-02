@@ -181,7 +181,7 @@ public class WorkoutScreen extends Activity {
 				lpAdd = new LayoutParams(LayoutParams.WRAP_CONTENT,LayoutParams.WRAP_CONTENT);
 				lpAdd.addRule(RelativeLayout.RIGHT_OF, vt.getId());				
 				bClear = new Button(this);
-				bClear.setText("Clear"); /** to be changed to delete image */
+				bClear.setText("Del"); /** to be changed to delete image */
 				bClear.setGravity(Gravity.RIGHT);
 				bClear.setWidth((int)(screenWidth * 0.2)); /** 20% width of screen */
 				rlWorkoutRow.addView(bClear, lpAdd);
