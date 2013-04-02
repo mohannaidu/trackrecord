@@ -156,6 +156,8 @@ public class WorkoutScreen extends Activity {
 				
 		Button bClear;
 		
+		int iRowNo = 1;
+		
 		if (workoutCursor != null && workoutCursor.moveToFirst()) {
 	        do {
 	        	/** adding relative layout */
@@ -184,6 +186,8 @@ public class WorkoutScreen extends Activity {
 				bClear.setText("Del"); /** to be changed to delete image */
 				bClear.setGravity(Gravity.RIGHT);
 				bClear.setWidth((int)(screenWidth * 0.2)); /** 20% width of screen */
+				bClear.setTag(iRowNo++);
+				bClear.setOnClickListener(onDeleteRow);
 				rlWorkoutRow.addView(bClear, lpAdd);
 				rl.addView(rlWorkoutRow, lp);
 				
@@ -192,18 +196,10 @@ public class WorkoutScreen extends Activity {
 				
 				
 	        } while (workoutCursor.moveToNext());
-    	}/*else{
-    		
-    		et = controlHelper.createEditText(this, "", 80, true, InputType.TYPE_CLASS_TEXT|InputType.TYPE_TEXT_FLAG_CAP_WORDS, 80);
-			et.setTextColor(Color.parseColor("#00ccff"));
-			editTextList.add(et);
-			rl.addView(et);
-    	}*/
+    	}
 		
-    	
-    	
 		this.setContentView(rl);
-		//removeSplashScreen();
+		
 	}
 	
 	private View.OnClickListener openExercise = new View.OnClickListener() {
@@ -232,21 +228,12 @@ public class WorkoutScreen extends Activity {
 	    	editTextList.add(et);
 			llAddNewRow.addView(et);		
 			
-			//View button = rl.getChildAt(rl.getChildCount()-1);
-			//rl.removeViewAt(rl.getChildCount()-1);
-			
 			// need to check if this is the first row to be added or not; cos it will throw exception
 			View lastLinearLayout = rl.getChildAt(rl.getChildCount()-1);
 			
-			
 			lp = new LayoutParams(LayoutParams.WRAP_CONTENT,LayoutParams.WRAP_CONTENT);
 			lp.addRule(RelativeLayout.BELOW, lastLinearLayout.getId());
-			rl.addView(llAddNewRow, lp);	
-			/*
-			//retrieve save button from relativelayout and get re-add below the layout				
-			lpSave = new LayoutParams(LayoutParams.WRAP_CONTENT,LayoutParams.WRAP_CONTENT);
-			lpSave.addRule(RelativeLayout.BELOW, llAddNewRow.getId());
-			rl.addView(button, lpSave);*/
+			rl.addView(llAddNewRow, lp);				
 			
 		}
 	};
@@ -279,9 +266,45 @@ public class WorkoutScreen extends Activity {
 			Toast.makeText(getApplicationContext(), "Saved", Toast.LENGTH_SHORT).show();
 			
 			/** reload activity */
-			onCreate(null);
-			/*finish();
-			startActivity(getIntent());*/
+			onCreate(null);			
+		}
+	};
+	
+	private View.OnClickListener onDeleteRow = new View.OnClickListener() {			
+
+		@Override
+		public void onClick(View v) {
+			Button button;
+			/** get row number to be moved */
+			int rowMove = Integer.parseInt(v.getTag().toString()); 
+			
+			/** get total number of rows */
+			RelativeLayout lastRelativeLayout = (RelativeLayout) rl.getChildAt(rl.getChildCount()-1);
+			button = (Button)lastRelativeLayout.getChildAt(lastRelativeLayout.getChildCount()-1);				
+			int rowNo = Integer.parseInt(button.getTag().toString());			   
+			
+			RelativeLayout relativeLayoutDelete = new RelativeLayout(WorkoutScreen.this);
+			int rowNoRelativeLayout = rl.getChildCount();
+			int rowNoEditText = rowNoRelativeLayout - rowNo;
+			
+			String workoutName = "";
+		    for (int i=1; i<=rowNo; i++){
+		    	 /** if current row is the row to be deleted */
+		    	if(i == rowMove){
+		    		/** remove from relativeview */
+		    		relativeLayoutDelete = (RelativeLayout) rl.getChildAt(rowNoEditText);
+		    		rl.removeViewAt(rowNoEditText-1);
+		    		TextView tvDel = (TextView)relativeLayoutDelete.getChildAt(lastRelativeLayout.getChildCount()-2);
+		    		workoutName = tvDel.getText().toString();
+		    			
+		    		/** remove from database */
+		    		/** need to write it */
+		    		helper.deleteWorkout(workoutName);
+		    	}
+		    	rowNoEditText++;
+		    }
+		    /** reload activity */
+			onCreate(null);	
 		}
 	};
 	

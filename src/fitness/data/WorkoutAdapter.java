@@ -10,6 +10,7 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.text.format.DateFormat;
+import android.text.format.Time;
 
 public class WorkoutAdapter {
     	public static final String KEY_ROWID = "_id";
@@ -67,8 +68,23 @@ public class WorkoutAdapter {
         return this.mDb.insert(DATABASE_TABLE, null, cv);
     }
     
-    public boolean deleteWorkout(long rowId) {
-        return this.mDb.delete(DATABASE_TABLE, KEY_ROWID + "=" + rowId, null) > 0; 
+    public boolean deleteWorkout(String workoutName) {
+    	Cursor mCursor = null;
+        // Wrap the next line in try-catch
+        try{
+        	
+        	mCursor = this.mDb.query(DATABASE_TABLE, new String[] {
+        			KEY_ROWID }, KEY_NAME + " = '" + workoutName + "'", 
+        			  null, null, null, null, null);
+        }catch(Exception e){
+        	e.printStackTrace();        	
+        }
+        
+        if (mCursor != null) {
+            mCursor.moveToFirst();
+            this.mDb.delete(ExerciseAdapter.DATABASE_TABLE, ExerciseAdapter.KEY_WORKOUTID + " = '" +  mCursor.getString(0) + "'", null);
+        }
+        return this.mDb.delete(DATABASE_TABLE, KEY_NAME + " = '" + workoutName + "'", null) > 0; 
     }
    
     public Cursor getAllWorkout() {

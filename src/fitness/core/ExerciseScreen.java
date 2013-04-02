@@ -431,7 +431,7 @@ public class ExerciseScreen extends Activity {
 				int iDeleteRowRemovedFromView = 0;
 				int iNewNo = 1;
 			    for (int i=1; i<=rowNo; i++){
-			    	 /** if current row is the row to be moved up */
+			    	 /** if current row is the row to be deleted */
 			    	if(i == rowMove){	
 			    		rl.removeViewAt(rowNoEditText-1);	
 			    		iDeleteRowRemovedFromView = 1;
