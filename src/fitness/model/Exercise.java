@@ -1,19 +1,17 @@
 package fitness.model;
 
-import java.util.Date;
 
 import android.text.format.Time;
 
 public class Exercise {
 	private String exercise = "";
-	private String weight = "0.0";
 	private String sets = "0";
-	private String reps = "0";
 	private String target = "0";
 	private String tempo = "";
 	private String rest = "0";
 	private String orderingValue = "0";
 	private String workoutID = "0";
+	private String superSetID = "0";
 	private Time dateEntered;
 	
 	public String getExercise() {
@@ -22,24 +20,14 @@ public class Exercise {
 	public void setExercise(String exercise) {
 		this.exercise = exercise;
 	}
-	public String getWeight() {
-		return weight;
-	}
-	public void setWeight(String weight) {
-		this.weight = weight;
-	}
+	
 	public String getSets() {
 		return sets;
 	}
 	public void setSets(String sets) {
 		this.sets = sets;
 	}
-	public String getReps() {
-		return reps;
-	}
-	public void setReps(String reps) {
-		this.reps = reps;
-	}
+	
 	public String getTarget() {
 		return target;
 	}
@@ -78,6 +66,13 @@ public class Exercise {
 	public void setDateEntered(Time dateEntered) {
 		this.dateEntered = dateEntered;
 	}
+	public String getSuperSetID() {
+		return superSetID;
+	}
+	public void setSuperSetID(String superSetID) {
+		this.superSetID = superSetID;
+	}
+	
 	
 		
 	

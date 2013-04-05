@@ -27,5 +27,7 @@
       	 <activity android:name="fitness.core.HomeScreen"></activity>
       	 <activity android:name="fitness.core.ProgressScreen"></activity>
       	 <activity android:name="fitness.core.WorkoutScreen"></activity>
+      	 <activity android:name="fitness.core.SetScreen"></activity>
+      	 <activity android:name="fitness.core.PrefsScreen"></activity>
     </application>
 </manifest>

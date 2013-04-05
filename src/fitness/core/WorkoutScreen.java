@@ -5,7 +5,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import fitness.data.WorkoutAdapter;
+import fitness.data.DBAdapter;
 import fitness.model.Workout;
 
 import sra.gg.R;
@@ -40,7 +40,7 @@ import android.widget.RelativeLayout.LayoutParams;
 
 @TargetApi(Build.VERSION_CODES.ICE_CREAM_SANDWICH)
 public class WorkoutScreen extends Activity {
-	WorkoutAdapter helper;
+	DBAdapter helper;
 	TextView vt;
 	EditText et;
 	int iViewCounter;
@@ -88,15 +88,11 @@ public class WorkoutScreen extends Activity {
 		iViewCounter = 0;
 		//Intent myScreen = new Intent(this, ExerciseScreen.class);
 		//this.startActivity(myScreen);
-		//DBAdapter adapter = new DBAdapter(this);
+
 		
-		helper = new WorkoutAdapter(this);
-		try {
-			helper.open();
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
-		
+		helper = DBAdapter.getInstance(this);		
+
+
 		try {
 			workoutCursor = helper.getAllWorkout();
 		}catch (Exception e){
@@ -243,7 +239,7 @@ public class WorkoutScreen extends Activity {
 		@Override
 		public void onClick(View v) {
 			// TODO Auto-generated method stub
-			String valList[] = new String[editTextList.size()];
+			String valList[] = new String[editTextList.size()+1];
 			int i = 0;
 			
 			for (EditText editText : editTextList) {
@@ -260,7 +256,7 @@ public class WorkoutScreen extends Activity {
 				Time newTime = new Time();
 				newTime.setToNow();
 		    	workout.setDateCreated(newTime);
-				workout.setOrderingValue(1);
+				workout.setOrderingValue(k+1);
 				helper.createEntry(workout);
 			}
 			Toast.makeText(getApplicationContext(), "Saved", Toast.LENGTH_SHORT).show();
