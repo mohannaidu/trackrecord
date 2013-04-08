@@ -10,6 +10,7 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.text.format.DateFormat;
 import android.text.format.Time;
+import android.util.Log;
 
 public class DBAdapter extends SQLiteOpenHelper{
 	public static final String DATABASE_NAME = "fitness.db"; 	
@@ -229,7 +230,7 @@ public class DBAdapter extends SQLiteOpenHelper{
             try{
             	
             	mCursor = DBAdapter.mInstance.getWritableDatabase().query(EXERCISE_DATABASE_TABLE, new String[] {
-            			KEY_NAME, KEY_SETS, KEY_TARGET, KEY_TEMPO, KEY_REST, KEY_DATE_ENTERED, KEY_ORDERING_VALUE, KEY_ROWID }, KEY_DATE_ENTERED + " = '" + DateFormat.format("dd-MM-yy", dtDob).toString() + "' AND " + KEY_WORKOUTID + " = '" +  workoutNo + "'", 
+            			KEY_NAME, KEY_SETS, KEY_TARGET, KEY_TEMPO, KEY_REST, KEY_DATE_ENTERED, KEY_ORDERING_VALUE, KEY_ROWID, KEY_SUPERSETID }, KEY_DATE_ENTERED + " = '" + DateFormat.format("dd-MM-yy", dtDob).toString() + "' AND " + KEY_WORKOUTID + " = '" +  workoutNo + "'", 
             			  null, null, null, KEY_ORDERING_VALUE + " ASC", null);
             }catch(Exception e){
             	e.printStackTrace();        	
@@ -355,6 +356,15 @@ public class DBAdapter extends SQLiteOpenHelper{
         	cv.put(KEY_SUPERSETID, ssID);
         	
             return DBAdapter.mInstance.getWritableDatabase().update(EXERCISE_DATABASE_TABLE, cv, KEY_ROWID + "='" + exerciseID + "' AND " + KEY_WORKOUTID + " = '" +workoutID + "'", null) >0; 
+        }
+        
+        public boolean unlinkExerciseSuperSet(String ssID, String workoutID){
+        	ContentValues cv = new ContentValues();
+        
+        	/** need to check for giant set */
+        	cv.put(KEY_SUPERSETID, "");
+        	
+            return DBAdapter.mInstance.getWritableDatabase().update(EXERCISE_DATABASE_TABLE, cv, KEY_SUPERSETID + " = '" + ssID + "' AND " + KEY_WORKOUTID + " = '" +workoutID + "'", null) >0; 
         }
         
         public Cursor getSuperSetID(String exerciseID, String workoutID) {

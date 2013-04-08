@@ -5,16 +5,16 @@
       android:versionName="1.0">
     <uses-sdk android:minSdkVersion="7" />
 
-    <application android:icon="@drawable/icon">
+    <application android:icon="@drawable/icon">        
        <!-- <activity android:name="fitness.core.WorkoutScreen"
-            		android:label="Fitness Tracker">
+            		android:label="Track Record">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity> --> 
         <activity android:name="fitness.core.SplashScreen"
-            		android:label="Fitness Tracker">
+            		android:label="Track Record">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
@@ -23,7 +23,7 @@
         <activity android:name="fitness.core.ExerciseScreen" 
             		android:screenOrientation="sensor"
                   	android:configChanges="keyboardHidden"
-                  	android:label="Fitness Tracker"></activity>
+                  	android:label="Track Record"></activity>
       	 <activity android:name="fitness.core.HomeScreen"></activity>
       	 <activity android:name="fitness.core.ProgressScreen"></activity>
       	 <activity android:name="fitness.core.WorkoutScreen"></activity>

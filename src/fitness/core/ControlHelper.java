@@ -47,6 +47,8 @@ public class ControlHelper {
 		et.setFocusableInTouchMode(false);
 		et.setSingleLine(true);
 		et.setOnClickListener(editTextFocusable);
+		et.setBackgroundColor(Color.GRAY);
+		et.setTextAppearance(ctx, R.drawable.edittext);
 		//et.setOnFocusChangeListener(editTextFocus);
 		et.setInputType(sInputType);
 		FilterArray = new InputFilter[1];
@@ -82,7 +84,7 @@ public class ControlHelper {
 		vt.setText(sValue);
 		vt.setWidth(iWidth);
 		vt.setHeight(iHeight);
-		vt.setTextColor(R.color.gray);
+		vt.setTextColor(R.color.white);
 				
 		return vt;
 	}

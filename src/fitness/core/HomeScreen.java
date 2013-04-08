@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -26,8 +27,8 @@ public class HomeScreen extends Activity {
 		//this.startActivity(myScreen);
 		
 
-		setTitle("Fitness Tracker");
-		getWindow().getDecorView().setBackgroundColor(Color.parseColor("#FFFFFF"));
+		setTitle("Track Record");
+		//getWindow().getDecorView().setBackgroundColor(Color.parseColor("#FFFFFF"));
 		
 		ImageButton button = new ImageButton(this);
 		RelativeLayout rl = new RelativeLayout(this);
@@ -126,6 +127,8 @@ public class HomeScreen extends Activity {
 		rl.addView(bprefs, lp);	
 		*/	
 		this.setContentView(rl);
+		
+		//getActionBar().setDisplayHomeAsUpEnabled(true);
 	}
 	
 	private View.OnClickListener openWorkout = new View.OnClickListener() {
@@ -136,5 +139,21 @@ public class HomeScreen extends Activity {
 			startActivity(myScreen);
 		}
 	};
+	
+	@Override
+	public boolean onOptionsItemSelected(MenuItem item) {
+		switch (item.getItemId()) {
+		case android.R.id.home:
+			// This is called when the Home (Up) button is pressed
+			// in the Action Bar.
+			Intent parentActivityIntent = new Intent(this, HomeScreen.class);
+			parentActivityIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP
+					| Intent.FLAG_ACTIVITY_NEW_TASK);
+			startActivity(parentActivityIntent);
+			finish();
+			return true;
+		}
+		return super.onOptionsItemSelected(item);
+	}
 		
 }

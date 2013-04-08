@@ -82,7 +82,7 @@ public class WorkoutScreen extends Activity {
         screenWidth = size.x;
 		
 		// pale blue bg
-		getWindow().getDecorView().setBackgroundColor(Color.parseColor("#AFC7C7"));
+		//getWindow().getDecorView().setBackgroundColor(Color.parseColor("#AFC7C7"));
 		
 		List<Workout> workout = null;
 		iViewCounter = 0;
@@ -109,7 +109,7 @@ public class WorkoutScreen extends Activity {
     	tv.setLayoutParams(lpTopView); 
     	tv.setId(iViewCounter++);
     	tv.setTextAppearance(this, android.R.style.TextAppearance_DeviceDefault_Large);
-    	tv.setText("Fitness Tracker");
+    	tv.setText("Track Record");
     	tv.setTextColor(Color.BLACK);    	
     	rl.addView(tv);
     	
