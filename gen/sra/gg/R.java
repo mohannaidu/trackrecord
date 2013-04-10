@@ -24,26 +24,25 @@ public final class R {
         public static final int white=0x7f040007;
     }
     public static final class drawable {
-        public static final int call_history=0x7f020000;
-        public static final int cb=0x7f020001;
-        public static final int di_sails_dark_gray_mdpi=0x7f020002;
-        public static final int di_sails_dark_gray_mdpi2=0x7f020003;
-        public static final int edittext=0x7f020004;
-        public static final int empty_white_box=0x7f020005;
-        public static final int front=0x7f020006;
-        public static final int icon=0x7f020007;
-        public static final int image=0x7f020008;
-        public static final int info_btn=0x7f020009;
-        public static final int my_contract=0x7f02000a;
-        public static final int my_crm=0x7f02000b;
-        public static final int my_invoice=0x7f02000c;
-        public static final int prefs=0x7f02000d;
-        public static final int progress=0x7f02000e;
-        public static final int red_button=0x7f02000f;
-        public static final int sisteer_logo_1=0x7f020010;
-        public static final int usapissue=0x7f020011;
-        public static final int user_details=0x7f020012;
-        public static final int workout=0x7f020013;
+        public static final int di_sails_dark_gray_mdpi=0x7f020000;
+        public static final int di_sails_dark_gray_mdpi2=0x7f020001;
+        public static final int edittext=0x7f020002;
+        public static final int empty_black_box=0x7f020003;
+        public static final int exercise_btn=0x7f020004;
+        public static final int front=0x7f020005;
+        public static final int icon=0x7f020006;
+        public static final int image=0x7f020007;
+        public static final int my_crm=0x7f020008;
+        public static final int prefs=0x7f020009;
+        public static final int prefs_btn=0x7f02000a;
+        public static final int prefs_button=0x7f02000b;
+        public static final int progress=0x7f02000c;
+        public static final int progress_btn=0x7f02000d;
+        public static final int red_button=0x7f02000e;
+        public static final int round=0x7f02000f;
+        public static final int workout=0x7f020010;
+        public static final int workout_btn=0x7f020011;
+        public static final int workout_desc=0x7f020012;
     }
     public static final class id {
         public static final int exercisesSpinner=0x7f070000;

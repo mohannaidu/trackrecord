@@ -109,7 +109,7 @@ public class ExerciseScreen extends Activity {
 		 */
 		getWindow().requestFeature(Window.FEATURE_ACTION_BAR);
 		// pale blue bg
-		getWindow().getDecorView().setBackgroundColor(Color.parseColor("#000000"));
+		getWindow().getDecorView().setBackgroundColor(Color.parseColor("#1e1e1e"));
 		this.setTitle(getIntent().getStringExtra("workoutTitle"));
 
 		display = getWindowManager().getDefaultDisplay();
@@ -212,7 +212,8 @@ public class ExerciseScreen extends Activity {
 		lp = new LayoutParams(LayoutParams.WRAP_CONTENT,
 				LayoutParams.WRAP_CONTENT);
 		lp.addRule(RelativeLayout.BELOW, topLevelView.getId());
-
+		lp.setMargins(0, 0, 0, 5);
+		
 		// adding textview for field description
 		ll = new LinearLayout(this);
 		ll.setOrientation(LinearLayout.HORIZONTAL);
@@ -224,7 +225,8 @@ public class ExerciseScreen extends Activity {
 		lp = new LayoutParams(LayoutParams.WRAP_CONTENT,
 				LayoutParams.WRAP_CONTENT);
 		lp.addRule(RelativeLayout.BELOW, ll.getId());
-
+		lp.setMargins(0, 5, 0, 0);
+		
 		try {
 			/** Get all exercises logged for the selected day */
 			exerciseCursor = helper.getAllExercise(

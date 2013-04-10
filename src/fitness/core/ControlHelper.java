@@ -4,6 +4,7 @@ import sra.gg.R;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.res.Configuration;
+import android.content.res.Resources;
 import android.graphics.Color;
 import android.graphics.Point;
 import android.text.InputFilter;
@@ -47,8 +48,8 @@ public class ControlHelper {
 		et.setFocusableInTouchMode(false);
 		et.setSingleLine(true);
 		et.setOnClickListener(editTextFocusable);
-		et.setBackgroundColor(Color.GRAY);
-		et.setTextAppearance(ctx, R.drawable.edittext);
+		//et.setTextAppearance(ctx, R.drawable.r);
+		et.setBackgroundDrawable(ctx.getResources().getDrawable(R.drawable.round));
 		//et.setOnFocusChangeListener(editTextFocus);
 		et.setInputType(sInputType);
 		FilterArray = new InputFilter[1];
@@ -69,6 +70,7 @@ public class ControlHelper {
 		actv.setSingleLine(true);
 		actv.setFocusableInTouchMode(false);
 		actv.setOnClickListener(editTextFocusable);
+		actv.setBackgroundDrawable(ctx.getResources().getDrawable(R.drawable.round));
 		//actv.setOnFocusChangeListener(editTextFocus);
 		//actv.setInputType(sInputType);
 		FilterArray = new InputFilter[1];
@@ -78,13 +80,13 @@ public class ControlHelper {
 		return actv;
 	}
 	
-	@SuppressLint("ResourceAsColor")
+
 	public TextView createTextView(Context ctx, String sValue, int iWidth, int iHeight){
 		vt = new TextView(ctx);
 		vt.setText(sValue);
 		vt.setWidth(iWidth);
 		vt.setHeight(iHeight);
-		vt.setTextColor(R.color.white);
+		vt.setTextColor(ctx.getResources().getColor((R.color.white)));
 				
 		return vt;
 	}

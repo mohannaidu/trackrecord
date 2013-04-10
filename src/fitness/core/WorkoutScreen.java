@@ -1,8 +1,6 @@
 package fitness.core;
 
-import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 import fitness.data.DBAdapter;
@@ -10,7 +8,6 @@ import fitness.model.Workout;
 
 import sra.gg.R;
 
-import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
 import android.app.Activity;
 import android.app.Dialog;
@@ -19,7 +16,6 @@ import android.content.res.Resources;
 import android.database.Cursor;
 import android.graphics.Color;
 import android.graphics.Point;
-import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
@@ -31,7 +27,6 @@ import android.view.Gravity;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -148,10 +143,8 @@ public class WorkoutScreen extends Activity {
     	lp = new LayoutParams(LayoutParams.WRAP_CONTENT,LayoutParams.WRAP_CONTENT);
 		lp.addRule(RelativeLayout.BELOW, topLevelView.getId());	
 		
-		controlHelper = new ControlHelper();
-				
-		Button bClear;
-		
+		controlHelper = new ControlHelper();				
+		Button bClear;		
 		int iRowNo = 1;
 		
 		if (workoutCursor != null && workoutCursor.moveToFirst()) {
@@ -159,7 +152,9 @@ public class WorkoutScreen extends Activity {
 	        	/** adding relative layout */
 	        	rlWorkoutRow = new RelativeLayout(this);
 	    		lpWorkoutRow = new LayoutParams(LayoutParams.MATCH_PARENT,LayoutParams.MATCH_PARENT);
-	    		rlWorkoutRow.setPadding(0, 10, 0, 0);
+	    		
+	    		if (iRowNo==1)
+	    				rlWorkoutRow.setPadding(0, 10, 0, 0);
 	    		rlWorkoutRow.setLayoutParams(lpWorkoutRow);
 	    		rlWorkoutRow.setId(iViewCounter++);
 	    		
@@ -170,7 +165,8 @@ public class WorkoutScreen extends Activity {
 				vt.setTag(workoutCursor.getString(0));
 				vt.setText(workoutCursor.getString(1));				
 				vt.setTextAppearance(this, R.style.workoutTextView);				
-				vt.setBackgroundColor(Color.parseColor("#CFECEC"));
+				//vt.setBackgroundColor(Color.parseColor("#CFECEC"));
+				vt.setBackgroundResource(R.drawable.workout_desc);
 				vt.setSingleLine(true);
 				vt.setOnClickListener(openExercise);
 				rlWorkoutRow.addView(vt);
