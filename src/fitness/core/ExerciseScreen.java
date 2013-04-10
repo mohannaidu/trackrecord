@@ -9,7 +9,7 @@ import fitness.data.DBAdapter;
 import fitness.model.Exercise;
 import fitness.model.Set;
 
-import sra.gg.R;
+import com.trackrecord.R;
 
 import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
@@ -213,7 +213,7 @@ public class ExerciseScreen extends Activity {
 				LayoutParams.WRAP_CONTENT);
 		lp.addRule(RelativeLayout.BELOW, topLevelView.getId());
 		lp.setMargins(0, 0, 0, 5);
-		
+
 		// adding textview for field description
 		ll = new LinearLayout(this);
 		ll.setOrientation(LinearLayout.HORIZONTAL);
@@ -226,7 +226,7 @@ public class ExerciseScreen extends Activity {
 				LayoutParams.WRAP_CONTENT);
 		lp.addRule(RelativeLayout.BELOW, ll.getId());
 		lp.setMargins(0, 5, 0, 0);
-		
+
 		try {
 			/** Get all exercises logged for the selected day */
 			exerciseCursor = helper.getAllExercise(

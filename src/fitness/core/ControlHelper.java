@@ -1,6 +1,6 @@
 package fitness.core;
 
-import sra.gg.R;
+import com.trackrecord.R;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.res.Configuration;
@@ -19,7 +19,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 public class ControlHelper {
-	
+
 	Double exercisePct;
     Double weightPct;
     Double setsPct;
@@ -28,16 +28,16 @@ public class ControlHelper {
     Double tempoPct;
     Double restPct;
 
-	
+
 	EditText et;
 	TextView vt;
 	InputFilter[] FilterArray;
 	AutoCompleteTextView actv;
-	
-	
-	
-	
-	
+
+
+
+
+
 	public EditText createEditText(Context ctx, String sValue, String sHint, int iWidth, boolean selectOnFocus, int sInputType, int maxLength){
 		et = new EditText(ctx);
 		et.setText(sValue);
@@ -55,10 +55,10 @@ public class ControlHelper {
 		FilterArray = new InputFilter[1];
 		FilterArray[0] = new InputFilter.LengthFilter(maxLength);
 		et.setFilters(FilterArray);
-				
+
 		return et;
 	}
-	
+
 	public AutoCompleteTextView  createAutoCompleteText(Context ctx, String sValue, String sHint, int iWidth, boolean selectOnFocus, int sInputType, int maxLength){
 		actv = new AutoCompleteTextView(ctx);
 		actv.setText(sValue);
@@ -76,10 +76,10 @@ public class ControlHelper {
 		FilterArray = new InputFilter[1];
 		FilterArray[0] = new InputFilter.LengthFilter(maxLength);
 		actv.setFilters(FilterArray);
-				
+
 		return actv;
 	}
-	
+
 
 	public TextView createTextView(Context ctx, String sValue, int iWidth, int iHeight){
 		vt = new TextView(ctx);
@@ -87,12 +87,12 @@ public class ControlHelper {
 		vt.setWidth(iWidth);
 		vt.setHeight(iHeight);
 		vt.setTextColor(ctx.getResources().getColor((R.color.white)));
-				
+
 		return vt;
 	}
-	
+
 	private View.OnClickListener editTextFocusable = new View.OnClickListener() {
-		
+
 		@Override
 		public void onClick(View v) {
 			EditText et = (EditText)v;
@@ -101,14 +101,14 @@ public class ControlHelper {
 			et.requestFocus();
 		}
 	};
-	
+
 	/*private OnFocusChangeListener editTextFocus =  new OnFocusChangeListener() {
 		  public void onFocusChange(View view, boolean gainFocus) {
 		   //onFocus
 		   if (gainFocus) {
 		    //set the text
 		    //((EditText) view).setText("In focus now");
-		   } 
+		   }
 		   //onBlur
 		   else {
 		    //clear the text
