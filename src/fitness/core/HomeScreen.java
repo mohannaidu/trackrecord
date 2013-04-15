@@ -46,16 +46,16 @@ public class HomeScreen extends Activity {
 		int iViewCounter = 1;
 		rl.setId(iViewCounter++);
 
-		Drawable replacer = getResources().getDrawable(R.drawable.empty_black_box);
-		button.setBackgroundDrawable(replacer);
-		button.setId(iViewCounter++);
-		rl.addView(button);
+		//Drawable replacer = getResources().getDrawable(R.drawable.empty_black_box);
+		//button.setBackgroundDrawable(replacer);
+		//button.setId(iViewCounter++);
+		//rl.addView(button);
 
 		LayoutParams lp = new LayoutParams(LayoutParams.WRAP_CONTENT,LayoutParams.WRAP_CONTENT);
 		lp.addRule(RelativeLayout.BELOW, button.getId());
 		button = new ImageButton(this);
 		button.setId(iViewCounter++);
-		replacer = getResources().getDrawable(R.drawable.workout_btn);
+		Drawable replacer = getResources().getDrawable(R.drawable.workout_btn);
 		button.setBackgroundDrawable(replacer);
 		button.setOnClickListener(new View.OnClickListener() {
 			@Override
@@ -102,7 +102,7 @@ public class HomeScreen extends Activity {
 		display.getSize(size);
 		screenHeight = size.y;
 
-		lp = new LayoutParams(LayoutParams.MATCH_PARENT,(int) (screenHeight*0.34));
+		lp = new LayoutParams(LayoutParams.MATCH_PARENT,(int) (screenHeight*0.20));
 		lp.addRule(RelativeLayout.BELOW, button.getId());
 
 		View blankSpace = new View(this);

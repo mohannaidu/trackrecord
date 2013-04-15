@@ -111,4 +111,5 @@
 		<item>Machine seated calf raise|Calves</item>
 		<item>Machine standing calf raise|Calves</item>
     </string-array>
+		<string name="showTempo">Show Tempo Field</string>
 </resources>

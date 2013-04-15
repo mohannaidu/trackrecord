@@ -1,6 +1,5 @@
 package fitness.core;
 
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
@@ -18,6 +17,7 @@ import android.app.DatePickerDialog;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.database.Cursor;
@@ -25,6 +25,7 @@ import android.graphics.Color;
 import android.graphics.Point;
 import android.os.Build;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.text.InputType;
 import android.text.format.DateFormat;
 import android.text.format.Time;
@@ -128,8 +129,7 @@ public class ExerciseScreen extends Activity {
 		 * ll.setOrientation(LinearLayout.HORIZONTAL); ll.setId(iViewCounter++);
 		 */
 		rlTopView = new RelativeLayout(this);
-		lpTopView = new LayoutParams(LayoutParams.MATCH_PARENT,
-				LayoutParams.MATCH_PARENT);
+		lpTopView = new LayoutParams(LayoutParams.MATCH_PARENT,LayoutParams.MATCH_PARENT);
 		rlTopView.setPadding(0, 10, 0, 10);
 		rlTopView.setLayoutParams(lpTopView);
 		rlTopView.setId(iViewCounter++);
@@ -146,8 +146,7 @@ public class ExerciseScreen extends Activity {
 		// ll.addView(tv);
 
 		/** Calendar Display */
-		lpAdd = new LayoutParams(LayoutParams.WRAP_CONTENT,
-				LayoutParams.WRAP_CONTENT);
+		lpAdd = new LayoutParams(LayoutParams.WRAP_CONTENT,LayoutParams.WRAP_CONTENT);
 		lpAdd.addRule(RelativeLayout.RIGHT_OF, tv.getId());
 		tvCalendar = new TextView(this);
 		tvCalendar.setWidth(screenWidth / 2);
@@ -182,8 +181,7 @@ public class ExerciseScreen extends Activity {
 		add.setOnClickListener(onAddNewRow);
 		add.setId(iViewCounter++);
 
-		lpAdd = new LayoutParams(LayoutParams.WRAP_CONTENT,
-				LayoutParams.WRAP_CONTENT);
+		lpAdd = new LayoutParams(LayoutParams.WRAP_CONTENT,LayoutParams.WRAP_CONTENT);
 
 		save = new Button(this);
 		save.setText("Save");
@@ -192,8 +190,7 @@ public class ExerciseScreen extends Activity {
 		save.setWidth(80);
 		save.setOnClickListener(onSave);
 
-		lpSave = new LayoutParams(LayoutParams.WRAP_CONTENT,
-				LayoutParams.WRAP_CONTENT);
+		lpSave = new LayoutParams(LayoutParams.WRAP_CONTENT,LayoutParams.WRAP_CONTENT);
 		lpSave.addRule(RelativeLayout.RIGHT_OF, add.getId());
 		// minus 2 text box width
 		lpSave.setMargins(screenWidth - 80 - 80, 0, 0, 0);
@@ -201,36 +198,32 @@ public class ExerciseScreen extends Activity {
 		topLevelView.addView(add, lpAdd);
 		topLevelView.addView(save, lpSave);
 
-		lpTopLevel = new LayoutParams(LayoutParams.WRAP_CONTENT,
-				LayoutParams.WRAP_CONTENT);
+		lpTopLevel = new LayoutParams(LayoutParams.WRAP_CONTENT,LayoutParams.WRAP_CONTENT);
 		lpTopLevel.addRule(RelativeLayout.BELOW, rlTopView.getId());
 		rl.addView(topLevelView, lpTopLevel);
 
-		EditText et;
 		Cursor exerciseCursor = null;
 
-		lp = new LayoutParams(LayoutParams.WRAP_CONTENT,
-				LayoutParams.WRAP_CONTENT);
+		lp = new LayoutParams(LayoutParams.WRAP_CONTENT,LayoutParams.WRAP_CONTENT);
 		lp.addRule(RelativeLayout.BELOW, topLevelView.getId());
 		lp.setMargins(0, 0, 0, 5);
 
+		SharedPreferences sharedPrefs = PreferenceManager.getDefaultSharedPreferences(this);
 		// adding textview for field description
 		ll = new LinearLayout(this);
 		ll.setOrientation(LinearLayout.HORIZONTAL);
 		ll.setId(iViewCounter++);
 
-		ll = createTextViewRow(this, ll, getWindowManager().getDefaultDisplay());
-
+		//ll = createTextViewRow(this, ll, getWindowManager().getDefaultDisplay(), sharedPrefs);
+		
 		rl.addView(ll, lp);
-		lp = new LayoutParams(LayoutParams.WRAP_CONTENT,
-				LayoutParams.WRAP_CONTENT);
+		lp = new LayoutParams(LayoutParams.WRAP_CONTENT,LayoutParams.WRAP_CONTENT);
 		lp.addRule(RelativeLayout.BELOW, ll.getId());
 		lp.setMargins(0, 5, 0, 0);
 
 		try {
 			/** Get all exercises logged for the selected day */
-			exerciseCursor = helper.getAllExercise(
-					getIntent().getStringExtra("workoutRowID"), exerciseDate);
+			exerciseCursor = helper.getAllExercise(getIntent().getStringExtra("workoutRowID"), exerciseDate);
 			if (exerciseCursor.getCount() == 0)
 				exerciseCursor = null;
 			else {
@@ -248,8 +241,7 @@ public class ExerciseScreen extends Activity {
 			ll.setId(iViewCounter++);
 			ll.setBaselineAligned(false);
 
-			ll = createEditViewRow(this, ll, getWindowManager()
-					.getDefaultDisplay(), exerciseCursor, rowNo);
+			ll = createEditViewRow(this, ll, getWindowManager().getDefaultDisplay(), sharedPrefs, exerciseCursor, rowNo);
 			rowNo++;
 
 			/** need to check in debug */
@@ -258,20 +250,16 @@ public class ExerciseScreen extends Activity {
 				char[] month = new char[2];
 				char[] year = new char[2];
 				exerciseCursor.getString(dbDateEntered).getChars(0, 2, date, 0);
-				exerciseCursor.getString(dbDateEntered)
-						.getChars(3, 5, month, 0);
+				exerciseCursor.getString(dbDateEntered).getChars(3, 5, month, 0);
 				exerciseCursor.getString(dbDateEntered).getChars(6, 8, year, 0);
 
-				exerciseDate.set(Integer.parseInt(new String(date)),
-						Integer.parseInt(new String(month)) - 1,
-						Integer.parseInt("20" + new String(year)));
+				exerciseDate.set(Integer.parseInt(new String(date)),Integer.parseInt(new String(month)) - 1,Integer.parseInt("20" + new String(year)));
 				dtDob = exerciseDate.toMillis(true);
 				tvCalendar.setText(DateFormat.format("dd-MM-yy", dtDob));
 			}
 
 			rl.addView(ll, lp);
-			lp = new LayoutParams(LayoutParams.WRAP_CONTENT,
-					LayoutParams.WRAP_CONTENT);
+			lp = new LayoutParams(LayoutParams.WRAP_CONTENT,LayoutParams.WRAP_CONTENT);
 			lp.addRule(RelativeLayout.BELOW, ll.getId());
 
 			if (exerciseCursor == null)
@@ -283,6 +271,11 @@ public class ExerciseScreen extends Activity {
 		this.setContentView(sv);
 
 		getActionBar().setDisplayHomeAsUpEnabled(true);
+		
+		
+		
+		//Toast.makeText(getApplicationContext(), String.valueOf(sharedPrefs.getBoolean("tempo_Field", false)),Toast.LENGTH_SHORT).show();
+		
 	}
 
 	@Override
@@ -300,84 +293,50 @@ public class ExerciseScreen extends Activity {
 		return str.substring(0, num);
 	}
 
-	private LinearLayout createEditViewRow(Context ctx, LinearLayout ll,
-			Display display, Cursor exerciseCursor, int rowNo) {
+	private LinearLayout createEditViewRow(Context ctx, LinearLayout ll,Display display, SharedPreferences prefs, Cursor exerciseCursor, int rowNo) {
 		EditText et;
 		size = new Point();
 		display.getSize(size);
 		screenWidth = size.x;
 
 		if (ctx.getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE) {
-			exercisePct = 0.4;
-			setsPct = 0.075;
-			targetPct = 0.075;
-			tempoPct = 0.075;
-			restPct = 0.075;
-			orderingPct = 0.075;
-			deletePct = 0.075;
-			enterPct = 0.075;
-			superSetPct = 0.075;
+			exercisePct = 0.4;setsPct = 0.075;targetPct = 0.075;tempoPct = 0.075;restPct = 0.075;orderingPct = 0.075;deletePct = 0.075;enterPct = 0.075;superSetPct = 0.075;
 		} else if (ctx.getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT) {
-			exercisePct = 0.4;
-			setsPct = 0.108;
-			restPct = 0.108;
-			orderingPct = 0.108;
-			enterPct = 0.108;
-			targetPct = 0.108;
-			tempoPct = 0.108;
+			exercisePct = 0.4;setsPct = 0.108;restPct = 0.108;orderingPct = 0.108;enterPct = 0.108;targetPct = 0.108;tempoPct = 0.108;
 		}
 
-		AutoCompleteTextView actv = controlHelper.createAutoCompleteText(
-				ExerciseScreen.this, (exerciseCursor == null) ? ""
-						: exerciseCursor.getString(dbExercise),
-				"Enter exercise", (int) (exercisePct * screenWidth), true,
-				InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_FLAG_CAP_WORDS,
-				80);
+		AutoCompleteTextView actv = controlHelper.createAutoCompleteText(ExerciseScreen.this, (exerciseCursor == null) ? "": exerciseCursor.getString(dbExercise),"Enter exercise", (int) (exercisePct * screenWidth), true,InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_FLAG_CAP_WORDS,80);
 		String[] array = getResources().getStringArray(R.array.muscle_array);
 		String arr[] = new String[array.length];
 		for (int i = 0; i < array.length; i++)
 			arr[i] = retrieveMuscle(array[i]);
 
-		ArrayAdapter<String> adapter = new ArrayAdapter<String>(
-				ExerciseScreen.this,
-				android.R.layout.simple_dropdown_item_1line, arr);
+		ArrayAdapter<String> adapter = new ArrayAdapter<String>(ExerciseScreen.this,android.R.layout.simple_dropdown_item_1line, arr);
 		actv.setAdapter(adapter);
 		actv.setTag(getIntent().getStringExtra("workoutRowID"));
 		editTextList.add(actv);
 		ll.addView(actv);
 
-		et = controlHelper.createEditText(this, (exerciseCursor == null) ? ""
-				: exerciseCursor.getString(dbSets), "4",
-				(int) (setsPct * screenWidth), true,
-				InputType.TYPE_CLASS_NUMBER, 2);
+		et = controlHelper.createEditText(this, (exerciseCursor == null) ? "": exerciseCursor.getString(dbSets), "4",(int) (setsPct * screenWidth), true,InputType.TYPE_CLASS_NUMBER, 2);
 		editTextList.add(et);
 		ll.addView(et);
 
-		et = controlHelper.createEditText(this, (exerciseCursor == null) ? ""
-				: exerciseCursor.getString(dbTarget), "8",
-				(int) (targetPct * screenWidth), true,
-				InputType.TYPE_CLASS_NUMBER, 3);
+		et = controlHelper.createEditText(this, (exerciseCursor == null) ? "": exerciseCursor.getString(dbTarget), "8",	(int) (targetPct * screenWidth), true,InputType.TYPE_CLASS_NUMBER, 3);
 		editTextList.add(et);
 		ll.addView(et);
 
-		et = controlHelper.createEditText(this, (exerciseCursor == null) ? ""
-				: exerciseCursor.getString(dbTempo), "0202",
-				(int) (tempoPct * screenWidth), true,
-				InputType.TYPE_CLASS_NUMBER, 4);
+		et = controlHelper.createEditText(this, (exerciseCursor == null) ? "": exerciseCursor.getString(dbTempo), "0202",(int) (tempoPct * screenWidth), true,InputType.TYPE_CLASS_NUMBER, 4);
 		editTextList.add(et);
-		ll.addView(et);
+		if (prefs.getBoolean("tempo_Field", false) == true)
+			ll.addView(et);
 
-		et = controlHelper.createEditText(this, (exerciseCursor == null) ? ""
-				: exerciseCursor.getString(dbRest), "30",
-				(int) (restPct * screenWidth), true,
-				InputType.TYPE_CLASS_NUMBER, 3);
+		et = controlHelper.createEditText(this, (exerciseCursor == null) ? "": exerciseCursor.getString(dbRest), "30",(int) (restPct * screenWidth), true,InputType.TYPE_CLASS_NUMBER, 3);
 		editTextList.add(et);
 		ll.addView(et);
 
 		Button enterScreen = new Button(this);
 		enterScreen.setText("Enter");
-		enterScreen.setTag((exerciseCursor == null) ? "" : exerciseCursor
-				.getString(dbExerciseID));
+		enterScreen.setTag((exerciseCursor == null) ? "" : exerciseCursor.getString(dbExerciseID));
 		enterScreen.setOnClickListener(openSetScreen);
 		enterScreen.setId(iViewCounter++);
 		enterScreen.setWidth((int) (enterPct * screenWidth));
@@ -400,8 +359,7 @@ public class ExerciseScreen extends Activity {
 		Button createSuperSet = new Button(this);
 		if (exerciseCursor != null)
 			if (exerciseCursor.getString(dbSuperSetID) != null)
-				createSuperSet.setText(exerciseCursor.getString(dbSuperSetID)
-						.equalsIgnoreCase("") ? "^" : "SS");
+				createSuperSet.setText(exerciseCursor.getString(dbSuperSetID).equalsIgnoreCase("") ? "^" : "SS");
 			else
 				createSuperSet.setText("^");
 		createSuperSet.setTag(rowNo);
@@ -429,54 +387,31 @@ public class ExerciseScreen extends Activity {
 		return ll;
 	}
 
-	private LinearLayout createTextViewRow(Context ctx, LinearLayout ll,
-			Display display) {
+	private LinearLayout createTextViewRow(Context ctx, LinearLayout ll,Display display, SharedPreferences prefs) {
 
 		size = new Point();
 		display.getSize(size);
 		screenWidth = size.x;
 
 		if (ctx.getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE) {
-			exercisePct = 0.4;
-			setsPct = 0.075;
-			targetPct = 0.075;
-			tempoPct = 0.075;
-			restPct = 0.075;
-			orderingPct = 0.075;
-			deletePct = 0.075;
-			enterPct = 0.075;
-			superSetPct = 0.075;
+			exercisePct = 0.4;setsPct = 0.075;targetPct = 0.075;tempoPct = 0.075;restPct = 0.075;orderingPct = 0.075;deletePct = 0.075;enterPct = 0.075;superSetPct = 0.075;
 		} else if (ctx.getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT) {
-			exercisePct = 0.4;
-			setsPct = 0.108;
-			restPct = 0.108;
-			orderingPct = 0.108;
-			enterPct = 0.108;
-			targetPct = 0.108;
-			tempoPct = 0.108;
+			exercisePct = 0.4;setsPct = 0.108;restPct = 0.108;orderingPct = 0.108;enterPct = 0.108;targetPct = 0.108;tempoPct = 0.108;
 		}
 
-		ll.addView(controlHelper.createTextView(ctx, " Exercise",
-				(int) (exercisePct * screenWidth), textMaxLength));
-
-		ll.addView(controlHelper.createTextView(ctx, " Sets",
-				(int) (setsPct * screenWidth), textMaxLength));
-		ll.addView(controlHelper.createTextView(ctx, " Target",
-				(int) (targetPct * screenWidth), textMaxLength));
-		ll.addView(controlHelper.createTextView(ctx, " Tempo",
-				(int) (tempoPct * screenWidth), textMaxLength));
-		ll.addView(controlHelper.createTextView(ctx, " Rest(s)",
-				(int) (restPct * screenWidth), textMaxLength));
-		ll.addView(controlHelper.createTextView(ctx, " Edit",
-				(int) (enterPct * screenWidth), textMaxLength));
+		ll.addView(controlHelper.createTextView(ctx, " Exercise",(int) (exercisePct * screenWidth), textMaxLength));
+		ll.addView(controlHelper.createTextView(ctx, " Sets",(int) (setsPct * screenWidth), textMaxLength));
+		ll.addView(controlHelper.createTextView(ctx, " Target",(int) (targetPct * screenWidth), textMaxLength));
+		if (prefs.getBoolean("tempo_Field", false) == true)
+			ll.addView(controlHelper.createTextView(ctx, " Tempo",(int) (tempoPct * screenWidth), textMaxLength));
+		
+		ll.addView(controlHelper.createTextView(ctx, " Rest(s)",(int) (restPct * screenWidth), textMaxLength));
+		ll.addView(controlHelper.createTextView(ctx, " Edit",(int) (enterPct * screenWidth), textMaxLength));
 		if (ctx.getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE) {
-			ll.addView(controlHelper.createTextView(ctx, " Del",
-					(int) (deletePct * screenWidth), textMaxLength));
-			ll.addView(controlHelper.createTextView(ctx, " SuperSet",
-					(int) (superSetPct * screenWidth), textMaxLength));
+			ll.addView(controlHelper.createTextView(ctx, " Del",(int) (deletePct * screenWidth), textMaxLength));
+			ll.addView(controlHelper.createTextView(ctx, " SuperSet",(int) (superSetPct * screenWidth), textMaxLength));
 		}
-		ll.addView(controlHelper.createTextView(ctx, " Order",
-				(int) (restPct * screenWidth), textMaxLength));
+		ll.addView(controlHelper.createTextView(ctx, " Order",(int) (restPct * screenWidth), textMaxLength));
 
 		return ll;
 	}
@@ -487,8 +422,7 @@ public class ExerciseScreen extends Activity {
 		public void onClick(View v) {
 			Intent myScreen = new Intent(v.getContext(), SetScreen.class);
 			TextView vt = (TextView) v;
-			myScreen.putExtra("workoutTitle",
-					getIntent().getStringExtra("workoutTitle"));
+			myScreen.putExtra("workoutTitle",getIntent().getStringExtra("workoutTitle"));
 			myScreen.putExtra("fitnessDate", tvCalendar.getText());
 			myScreen.putExtra("exerciseID", vt.getTag().toString());
 			helper.close();
@@ -506,8 +440,8 @@ public class ExerciseScreen extends Activity {
 			llAddNewRow.setBaselineAligned(false);
 
 			display = getWindowManager().getDefaultDisplay();
-			LinearLayout lastLinearLayout = (LinearLayout) rl.getChildAt(rl
-					.getChildCount() - 1);
+			LinearLayout lastLinearLayout = (LinearLayout) rl.getChildAt(rl.getChildCount() - 1);
+			SharedPreferences sharedPrefs = PreferenceManager.getDefaultSharedPreferences(ExerciseScreen.this);
 
 			int i = 0;
 			int rowNo = 0;
@@ -517,11 +451,9 @@ public class ExerciseScreen extends Activity {
 				}
 				i++;
 			}
-			llAddNewRow = createEditViewRow(ExerciseScreen.this, llAddNewRow,
-					display, null, rowNo + 1);
+			llAddNewRow = createEditViewRow(ExerciseScreen.this, llAddNewRow,display, sharedPrefs, null, rowNo + 1);
 
-			lp = new LayoutParams(LayoutParams.WRAP_CONTENT,
-					LayoutParams.WRAP_CONTENT);
+			lp = new LayoutParams(LayoutParams.WRAP_CONTENT,LayoutParams.WRAP_CONTENT);
 			lp.addRule(RelativeLayout.BELOW, lastLinearLayout.getId());
 			rl.addView(llAddNewRow, lp);
 		}
@@ -536,10 +468,8 @@ public class ExerciseScreen extends Activity {
 			int rowMove = Integer.parseInt(v.getTag().toString());
 
 			/** get total number of rows */
-			LinearLayout lastLinearLayout = (LinearLayout) rl.getChildAt(rl
-					.getChildCount() - 1);
-			button = (Button) lastLinearLayout.getChildAt(lastLinearLayout
-					.getChildCount() - 1);
+			LinearLayout lastLinearLayout = (LinearLayout) rl.getChildAt(rl.getChildCount() - 1);
+			button = (Button) lastLinearLayout.getChildAt(lastLinearLayout.getChildCount() - 1);
 			int rowNo = Integer.parseInt(button.getTag().toString());
 
 			LinearLayout[] linearLayout = new LinearLayout[rowNo];
@@ -558,9 +488,7 @@ public class ExerciseScreen extends Activity {
 					String exerciseName = "";
 					for (int k = 1; k < noOfRows; k++) {
 						if (k == 1)
-							exerciseName = editTextList
-									.get((i - 1) * (noOfRows - 1)).getText()
-									.toString();
+							exerciseName = editTextList.get((i - 1) * (noOfRows - 1)).getText().toString();
 						editTextList.remove((i - 1) * (noOfRows - 1));
 					}
 					/** remove from database */
@@ -568,37 +496,28 @@ public class ExerciseScreen extends Activity {
 				} else {
 					/** all other rows */
 					linearLayout[iNewNo - 1] = (LinearLayout) rl
-							.getChildAt(rowNoEditText
-									- iDeleteRowRemovedFromView);
+							.getChildAt(rowNoEditText- iDeleteRowRemovedFromView);
 					/** get the update button and update the tag */
-					button = (Button) linearLayout[iNewNo - 1]
-							.getChildAt(linearLayout[iNewNo - 1]
-									.getChildCount() - 1);
+					button = (Button) linearLayout[iNewNo - 1].getChildAt(linearLayout[iNewNo - 1].getChildCount() - 1);
 					button.setTag(iNewNo);
 
 					/** get the delete button and update the tag */
-					button = (Button) linearLayout[iNewNo - 1]
-							.getChildAt(linearLayout[iNewNo - 1]
-									.getChildCount() - 2);
+					button = (Button) linearLayout[iNewNo - 1].getChildAt(linearLayout[iNewNo - 1].getChildCount() - 2);
 					button.setTag(iNewNo++);
 				}
 				rowNoEditText++;
 			}
 			/** remove all editrowtext */
-			rl.removeViews(rowNoRelativeLayout - rowNo, rowNo
-					- iDeleteRowRemovedFromView);
+			rl.removeViews(rowNoRelativeLayout - rowNo, rowNo- iDeleteRowRemovedFromView);
 
 			/** get textview id and set layout params */
-			lastLinearLayout = (LinearLayout) rl
-					.getChildAt(rl.getChildCount() - 1);
-			lp = new LayoutParams(LayoutParams.WRAP_CONTENT,
-					LayoutParams.WRAP_CONTENT);
+			lastLinearLayout = (LinearLayout) rl.getChildAt(rl.getChildCount() - 1);
+			lp = new LayoutParams(LayoutParams.WRAP_CONTENT,LayoutParams.WRAP_CONTENT);
 			lp.addRule(RelativeLayout.BELOW, lastLinearLayout.getId());
 
 			for (int i = 0; i < (rowNo - iDeleteRowRemovedFromView); i++) {
 				rl.addView(linearLayout[i], lp);
-				lp = new LayoutParams(LayoutParams.WRAP_CONTENT,
-						LayoutParams.WRAP_CONTENT);
+				lp = new LayoutParams(LayoutParams.WRAP_CONTENT,LayoutParams.WRAP_CONTENT);
 				lp.addRule(RelativeLayout.BELOW, linearLayout[i].getId());
 			}
 		}
@@ -616,18 +535,15 @@ public class ExerciseScreen extends Activity {
 
 			// Log.d("MyApp","SupersetKey: " + String.valueOf(iSaveRtnVal)); //
 			// supersetkey
-			Log.d("MyApp",
-					"WorkoutID: " + getIntent().getStringExtra("workoutRowID")); // workoutid
+			Log.d("MyApp","WorkoutID: " + getIntent().getStringExtra("workoutRowID")); // workoutid
 			Log.d("MyApp", "Row No: " + v.getTag().toString()); // rowNo
 
 			/** get row number to be connected as superset to top */
 			int rowConnect = Integer.parseInt(v.getTag().toString());
 
 			/** get total number of rows */
-			LinearLayout lastLinearLayout = (LinearLayout) rl.getChildAt(rl
-					.getChildCount() - 1);
-			button = (Button) lastLinearLayout.getChildAt(lastLinearLayout
-					.getChildCount() - 1);
+			LinearLayout lastLinearLayout = (LinearLayout) rl.getChildAt(rl.getChildCount() - 1);
+			button = (Button) lastLinearLayout.getChildAt(lastLinearLayout.getChildCount() - 1);
 			int rowNo = Integer.parseInt(button.getTag().toString());
 			int iNewNo = 0;
 
@@ -638,54 +554,34 @@ public class ExerciseScreen extends Activity {
 				for (int i = 1; i <= rowNo; i++) {
 					/** if current row is the row to be moved up */
 					if (i == rowConnect) {
-						linearLayout[iNewNo] = (LinearLayout) rl
-								.getChildAt(rowNoEditText);
+						linearLayout[iNewNo] = (LinearLayout) rl.getChildAt(rowNoEditText);
 						/** get the button and update the tag */
-						button = (Button) linearLayout[iNewNo]
-								.getChildAt(linearLayout[iNewNo]
-										.getChildCount() - 4);
-						Log.d("MyApp", "Exercise ID to be connected: "
-								+ button.getTag().toString());// exercise ID
+						button = (Button) linearLayout[iNewNo].getChildAt(linearLayout[iNewNo].getChildCount() - 4);
+						Log.d("MyApp", "Exercise ID to be connected: "+ button.getTag().toString());// exercise ID
 
-						linearLayout[iNewNo + 1] = (LinearLayout) rl
-								.getChildAt(rowNoEditText - 1);
-						button2 = (Button) linearLayout[iNewNo + 1]
-								.getChildAt(linearLayout[iNewNo + 1]
-										.getChildCount() - 4);
-						Log.d("MyApp", "Exercise ID to be connected with: "
-								+ button2.getTag().toString());// exercise ID to
-																// be connected
-																// with
+						linearLayout[iNewNo + 1] = (LinearLayout) rl.getChildAt(rowNoEditText - 1);
+						button2 = (Button) linearLayout[iNewNo + 1].getChildAt(linearLayout[iNewNo + 1].getChildCount() - 4);
+						Log.d("MyApp", "Exercise ID to be connected with: "+ button2.getTag().toString());
+						// exercise ID to be connected with
 
 						Cursor checkSSID = null;
 						helper = DBAdapter.getInstance(ExerciseScreen.this);
-						checkSSID = helper.getSuperSetID(button2.getTag()
-								.toString(),
-								getIntent().getStringExtra("workoutRowID"));
+						checkSSID = helper.getSuperSetID(button2.getTag().toString(),getIntent().getStringExtra("workoutRowID"));
 
 						if (checkSSID.getString(0).equalsIgnoreCase(""))
 							ssID = String.valueOf(helper.getLastInsertRow());
 						else
 							ssID = checkSSID.getString(0);
 
-						helper.updateExerciseSuperSet(ssID, getIntent()
-								.getStringExtra("workoutRowID"), button
-								.getTag().toString());
-						helper.updateExerciseSuperSet(ssID, getIntent()
-								.getStringExtra("workoutRowID"), button2
-								.getTag().toString());
+						helper.updateExerciseSuperSet(ssID, getIntent().getStringExtra("workoutRowID"), button.getTag().toString());
+						helper.updateExerciseSuperSet(ssID, getIntent().getStringExtra("workoutRowID"), button2.getTag().toString());
 						button.setOnClickListener(onUnlinkSuperSet);
 						button2.setOnClickListener(onUnlinkSuperSet);
-						button = (Button) linearLayout[iNewNo]
-								.getChildAt(linearLayout[iNewNo]
-										.getChildCount() - 2);
+						button = (Button) linearLayout[iNewNo].getChildAt(linearLayout[iNewNo].getChildCount() - 2);
 						button.setText("SS");
-						button2 = (Button) linearLayout[iNewNo + 1]
-								.getChildAt(linearLayout[iNewNo + 1]
-										.getChildCount() - 2);
+						button2 = (Button) linearLayout[iNewNo + 1].getChildAt(linearLayout[iNewNo + 1].getChildCount() - 2);
 						button2.setText("SS");
-						Toast.makeText(getApplicationContext(), "Saved",
-								Toast.LENGTH_SHORT).show();
+						Toast.makeText(getApplicationContext(), "Saved",Toast.LENGTH_SHORT).show();
 					}
 					rowNoEditText++;
 				}
@@ -706,18 +602,15 @@ public class ExerciseScreen extends Activity {
 
 			// Log.d("MyApp","SupersetKey: " + String.valueOf(iSaveRtnVal)); //
 			// supersetkey
-			Log.d("MyApp",
-					"WorkoutID: " + getIntent().getStringExtra("workoutRowID")); // workoutid
+			Log.d("MyApp","WorkoutID: " + getIntent().getStringExtra("workoutRowID")); // workoutid
 			Log.d("MyApp", "Row No: " + v.getTag().toString()); // rowNo
 
 			/** get row number to be connected as superset to top */
 			int rowConnect = Integer.parseInt(v.getTag().toString());
 
 			/** get total number of rows */
-			LinearLayout lastLinearLayout = (LinearLayout) rl.getChildAt(rl
-					.getChildCount() - 1);
-			button = (Button) lastLinearLayout.getChildAt(lastLinearLayout
-					.getChildCount() - 1);
+			LinearLayout lastLinearLayout = (LinearLayout) rl.getChildAt(rl.getChildCount() - 1);
+			button = (Button) lastLinearLayout.getChildAt(lastLinearLayout.getChildCount() - 1);
 			int rowNo = Integer.parseInt(button.getTag().toString());
 			int iNewNo = 0;
 
@@ -728,43 +621,31 @@ public class ExerciseScreen extends Activity {
 				for (int i = 1; i <= rowNo; i++) {
 					/** if current row is the row to be moved up */
 					if (i == rowConnect) {
-						linearLayout[iNewNo] = (LinearLayout) rl
-								.getChildAt(rowNoEditText);
+						linearLayout[iNewNo] = (LinearLayout) rl.getChildAt(rowNoEditText);
 						/** get the button and update the tag */
-						button = (Button) linearLayout[iNewNo]
-								.getChildAt(linearLayout[iNewNo]
-										.getChildCount() - 4);
-						Log.d("MyApp", "Exercise ID to be connected: "
-								+ button.getTag().toString());// exercise ID
+						button = (Button) linearLayout[iNewNo].getChildAt(linearLayout[iNewNo].getChildCount() - 4);
+						Log.d("MyApp", "Exercise ID to be connected: "+ button.getTag().toString());// exercise ID
 
-						linearLayout[iNewNo + 1] = (LinearLayout) rl
-								.getChildAt(rowNoEditText - 1);
-						button2 = (Button) linearLayout[iNewNo + 1]
-								.getChildAt(linearLayout[iNewNo + 1]
+						linearLayout[iNewNo + 1] = (LinearLayout) rl.getChildAt(rowNoEditText - 1);
+						button2 = (Button) linearLayout[iNewNo + 1].getChildAt(linearLayout[iNewNo + 1]
 										.getChildCount() - 4);
-						Log.d("MyApp", "Exercise ID to be connected with: "
-								+ button2.getTag().toString());// exercise ID to
-																// be connected
-																// with
+						Log.d("MyApp", "Exercise ID to be connected with: "+ button2.getTag().toString());
+						// exercise ID to be connected with
 
 						Cursor checkSSID = null;
 						helper = DBAdapter.getInstance(ExerciseScreen.this);
-						checkSSID = helper.getSuperSetID(button2.getTag()
-								.toString(),
-								getIntent().getStringExtra("workoutRowID"));
+						checkSSID = helper.getSuperSetID(button2.getTag().toString(),getIntent().getStringExtra("workoutRowID"));
 
 						if (checkSSID.getString(0) != null) {
 
 							ssID = checkSSID.getString(0);
 
-							helper.unlinkExerciseSuperSet(ssID, getIntent()
-									.getStringExtra("workoutRowID"));
+							helper.unlinkExerciseSuperSet(ssID, getIntent().getStringExtra("workoutRowID"));
 							button.setOnClickListener(onSuperSet);
 							button2.setOnClickListener(onSuperSet);
 							// button.setText("^");
 							// button2.setText("^");
-							Toast.makeText(getApplicationContext(), "Saved",
-									Toast.LENGTH_SHORT).show();
+							Toast.makeText(getApplicationContext(), "Saved",Toast.LENGTH_SHORT).show();
 							/** reload activity */
 							onCreate(null);
 						}
@@ -785,10 +666,8 @@ public class ExerciseScreen extends Activity {
 			int rowMove = Integer.parseInt(v.getTag().toString());
 
 			/** get total number of rows */
-			LinearLayout lastLinearLayout = (LinearLayout) rl.getChildAt(rl
-					.getChildCount() - 1);
-			button = (Button) lastLinearLayout.getChildAt(lastLinearLayout
-					.getChildCount() - 1);
+			LinearLayout lastLinearLayout = (LinearLayout) rl.getChildAt(rl.getChildCount() - 1);
+			button = (Button) lastLinearLayout.getChildAt(lastLinearLayout.getChildCount() - 1);
 			int rowNo = Integer.parseInt(button.getTag().toString());
 
 			if (rowNo > 1) {
@@ -798,27 +677,21 @@ public class ExerciseScreen extends Activity {
 				for (int i = 1; i <= rowNo; i++) {
 					/** if current row is above the row to be moved up */
 					if (i == (rowMove - 1)) {
-						linearLayout[i - 1] = (LinearLayout) rl
-								.getChildAt(rowNoEditText + 1);
+						linearLayout[i - 1] = (LinearLayout) rl.getChildAt(rowNoEditText + 1);
 						/** get the button and update the tag */
-						button = (Button) linearLayout[i - 1]
-								.getChildAt(linearLayout[i - 1].getChildCount() - 1);
+						button = (Button) linearLayout[i - 1].getChildAt(linearLayout[i - 1].getChildCount() - 1);
 						button.setTag(i);
 					} else /** if current row is the row to be moved up */
 					if (i == rowMove) {
-						linearLayout[i - 1] = (LinearLayout) rl
-								.getChildAt(rowNoEditText - 1);
+						linearLayout[i - 1] = (LinearLayout) rl.getChildAt(rowNoEditText - 1);
 						/** get the button and update the tag */
-						button = (Button) linearLayout[i - 1]
-								.getChildAt(linearLayout[i - 1].getChildCount() - 1);
+						button = (Button) linearLayout[i - 1].getChildAt(linearLayout[i - 1].getChildCount() - 1);
 						button.setTag(i);
 					} else {
 						/** all other rows */
-						linearLayout[i - 1] = (LinearLayout) rl
-								.getChildAt(rowNoEditText);
+						linearLayout[i - 1] = (LinearLayout) rl.getChildAt(rowNoEditText);
 						/** get the button and update the tag */
-						button = (Button) linearLayout[i - 1]
-								.getChildAt(linearLayout[i - 1].getChildCount() - 1);
+						button = (Button) linearLayout[i - 1].getChildAt(linearLayout[i - 1].getChildCount() - 1);
 						button.setTag(i);
 					}
 					rowNoEditText++;
@@ -827,16 +700,13 @@ public class ExerciseScreen extends Activity {
 				rl.removeViews(rowNoRelativeLayout - rowNo, rowNo);
 
 				/** get textview id and set layout params */
-				lastLinearLayout = (LinearLayout) rl.getChildAt(rl
-						.getChildCount() - 1);
-				lp = new LayoutParams(LayoutParams.WRAP_CONTENT,
-						LayoutParams.WRAP_CONTENT);
+				lastLinearLayout = (LinearLayout) rl.getChildAt(rl.getChildCount() - 1);
+				lp = new LayoutParams(LayoutParams.WRAP_CONTENT,LayoutParams.WRAP_CONTENT);
 				lp.addRule(RelativeLayout.BELOW, lastLinearLayout.getId());
 
 				for (int i = 0; i < rowNo; i++) {
 					rl.addView(linearLayout[i], lp);
-					lp = new LayoutParams(LayoutParams.WRAP_CONTENT,
-							LayoutParams.WRAP_CONTENT);
+					lp = new LayoutParams(LayoutParams.WRAP_CONTENT,LayoutParams.WRAP_CONTENT);
 					lp.addRule(RelativeLayout.BELOW, linearLayout[i].getId());
 				}
 			}
@@ -919,8 +789,7 @@ public class ExerciseScreen extends Activity {
 					 */
 					if (iSaveRtnVal >= 1) {
 
-						for (iSets = 1; iSets <= Integer.parseInt(exercise
-								.getSets()); iSets++) {
+						for (iSets = 1; iSets <= Integer.parseInt(exercise.getSets()); iSets++) {
 							mySet = new Set();
 							mySet.setExerciseID(String.valueOf(iSaveRtnVal));
 							mySet.setReps(exercise.getTarget());
@@ -937,8 +806,7 @@ public class ExerciseScreen extends Activity {
 					break;
 			}
 			if (bSaved) {
-				Toast.makeText(getApplicationContext(), "Saved",
-						Toast.LENGTH_SHORT).show();
+				Toast.makeText(getApplicationContext(), "Saved",Toast.LENGTH_SHORT).show();
 				releaseFocus();
 			}
 		}
@@ -951,8 +819,7 @@ public class ExerciseScreen extends Activity {
 			// This is called when the Home (Up) button is pressed
 			// in the Action Bar.
 			Intent parentActivityIntent = new Intent(this, WorkoutScreen.class);
-			parentActivityIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP
-					| Intent.FLAG_ACTIVITY_NEW_TASK);
+			parentActivityIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP| Intent.FLAG_ACTIVITY_NEW_TASK);
 			startActivity(parentActivityIntent);
 			finish();
 			return true;
@@ -971,15 +838,13 @@ public class ExerciseScreen extends Activity {
 		case MY_DATE_DIALOG_ID:
 			DatePickerDialog dateDlg = new DatePickerDialog(this,
 					new DatePickerDialog.OnDateSetListener() {
-						public void onDateSet(DatePicker view, int year,
-								int monthOfYear, int dayOfMonth) {
+						public void onDateSet(DatePicker view, int year,int monthOfYear, int dayOfMonth) {
 							Time chosenDate = new Time();
 							chosenDate.set(dayOfMonth, monthOfYear, year);
 							exerciseDate = chosenDate;
 							bDateAvailable = true;
 							long dtDob = exerciseDate.toMillis(true);
-							CharSequence strDate = DateFormat.format(
-									"dd-MM-yy", dtDob);
+							CharSequence strDate = DateFormat.format("dd-MM-yy", dtDob);
 							tvCalendar.setText(strDate);
 							// Toast.makeText(ExerciseScreen.this,"Date picked: "
 							// + strDate, Toast.LENGTH_SHORT).show();

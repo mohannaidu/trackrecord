@@ -79,7 +79,6 @@ public class WorkoutScreen extends Activity {
 		// pale blue bg
 		//getWindow().getDecorView().setBackgroundColor(Color.parseColor("#AFC7C7"));
 
-		List<Workout> workout = null;
 		iViewCounter = 0;
 		//Intent myScreen = new Intent(this, ExerciseScreen.class);
 		//this.startActivity(myScreen);

@@ -85,7 +85,7 @@ public class ControlHelper {
 		vt = new TextView(ctx);
 		vt.setText(sValue);
 		vt.setWidth(iWidth);
-		vt.setHeight(iHeight);
+		//vt.setHeight(iHeight);
 		vt.setTextColor(ctx.getResources().getColor((R.color.white)));
 
 		return vt;
